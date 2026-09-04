@@ -20,7 +20,7 @@ export default function Dashboard() {
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-8 py-8">
         {CATEGORIES.map((category) => {
           const categoryCourses = MOCK_COURSES.filter(
-            (c) => c.category === category
+            (c) => c.category === category,
           );
 
           if (categoryCourses.length === 0) return null;
