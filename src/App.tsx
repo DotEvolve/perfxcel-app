@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Routes, Route, Link, useNavigate, useParams } from 'react-router-dom';
 import { getCourses, getCourse, getTaxonomies } from './api';
 import type { Course, TaxonomyItem } from './api';
-import { Search, MapPin, Tag, BookOpen, Layers, ArrowRight } from 'lucide-react';
+import { Search, MapPin, Tag, Layers, ArrowRight } from 'lucide-react';
 
 export default function App() {
   return (
