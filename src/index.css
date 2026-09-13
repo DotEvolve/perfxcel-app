@@ -6,7 +6,7 @@
   --color-primary-500: #d946ef;
   --color-primary-600: #c026d3;
   --color-primary-700: #a21caf;
-  
+
   --color-secondary-50: #f8fafc;
   --color-secondary-100: #f1f5f9;
   --color-secondary-800: #1e293b;
@@ -14,7 +14,12 @@
 }
 
 body {
-  font-family: "Outfit", "Inter", system-ui, -apple-system, sans-serif;
+  font-family:
+    "Outfit",
+    "Inter",
+    system-ui,
+    -apple-system,
+    sans-serif;
   margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -30,9 +35,13 @@ body {
 
 /* Micro animations */
 .hover-lift {
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  transition:
+    transform 0.2s ease-in-out,
+    box-shadow 0.2s ease-in-out;
 }
 .hover-lift:hover {
   transform: translateY(-4px);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 8px 10px -6px rgba(0, 0, 0, 0.1);
 }
