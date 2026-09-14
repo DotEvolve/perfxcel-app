@@ -9,8 +9,15 @@
 
   --color-secondary-50: #f8fafc;
   --color-secondary-100: #f1f5f9;
+  --color-secondary-200: #e2e8f0;
+  --color-secondary-500: #64748b;
+  --color-secondary-600: #475569;
+  --color-secondary-700: #334155;
   --color-secondary-800: #1e293b;
   --color-secondary-900: #0f172a;
+
+  --color-accent-400: #fbbf24;
+  --color-accent-500: #f59e0b;
 }
 
 body {
@@ -44,4 +51,28 @@ body {
   box-shadow:
     0 10px 25px -5px rgba(0, 0, 0, 0.1),
     0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+
+.fade-in-up {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+}
+.fade-in-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.mega-menu-enter {
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+}
+.mega-menu-enter.open {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.section-heading {
+  @apply text-3xl md:text-4xl font-bold text-secondary-900;
 }

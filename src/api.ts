@@ -1,4 +1,7 @@
 import axios from "axios";
+import type { Course, TaxonomyItem, CourseFilters } from "./types/course";
+
+export type { Course, TaxonomyItem };
 
 const API_BASE_URL =
   import.meta.env.VITE_API_URL || "https://api-dev.perfxcel.com/api/v1";
@@ -7,32 +10,8 @@ export const api = axios.create({
   baseURL: API_BASE_URL,
 });
 
-export interface Course {
-  id: string;
-  title: string;
-  description: string;
-  objectives: string;
-  target_audience: string;
-  is_published: boolean;
-  category_id: string | null;
-  city_id: string | null;
-  association_id: string | null;
-  categories?: TaxonomyItem | null;
-  cities?: TaxonomyItem | null;
-  associations?: TaxonomyItem | null;
-}
-
-export interface TaxonomyItem {
-  id: string;
-  name: string;
-}
-
 export const getCourses = async (
-  filters: {
-    category_id?: string;
-    city_id?: string;
-    association_id?: string;
-  } = {},
+  filters: CourseFilters = {},
 ): Promise<Course[]> => {
   const params = new URLSearchParams();
   if (filters.category_id) params.append("category_id", filters.category_id);
