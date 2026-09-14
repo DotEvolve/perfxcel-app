@@ -347,7 +347,7 @@ function CourseDetail() {
                 
                 <div className="py-2">
                   <Turnstile 
-                    siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY || "0x4AAAAAAEzpFPxOX1rj0qUL"} 
+                    siteKey={import.meta.env.VITE_PERFXCEL_TURNSTILE_SITE_KEY || "0x4AAAAAAEzpFPxOX1rj0qUL"} 
                     onSuccess={(token) => setTurnstileToken(token)}
                   />
                 </div>
