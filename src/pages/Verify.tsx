@@ -75,7 +75,7 @@ export default function Verify() {
 
             <div className="flex justify-center my-4">
               <Turnstile 
-                siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY || ""} 
+                siteKey={import.meta.env.VITE_PERFXCEL_TURNSTILE_SITE_KEY || ""} 
                 onSuccess={setTurnstileToken} 
                 onExpire={() => setTurnstileToken(null)}
                 options={{
