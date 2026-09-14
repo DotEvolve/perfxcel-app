@@ -82,7 +82,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Why Perfxcel Section */}
+      {/* Why PerfXcel Section */}
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeading eyebrow="Why Choose Us" title="Our Promise to You" />
@@ -237,7 +237,7 @@ const TESTIMONIALS = [
   },
   {
     id: 4,
-    quote: "Highly recommend Perfxcel for any organisation looking to upskill their finance department. Exceptional quality.",
+    quote: "Highly recommend PerfXcel for any organisation looking to upskill their finance department. Exceptional quality.",
     author: "Fatima Rahman",
     company: "Saudi Investment Authority",
   },

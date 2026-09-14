@@ -8,7 +8,7 @@ export default function About() {
       <section className="bg-secondary-900 text-white py-20 px-4 sm:px-6 lg:px-8 mb-16 rounded-b-[3rem] shadow-xl relative overflow-hidden">
         <div className="absolute top-0 right-0 w-96 h-96 bg-primary-900 rounded-full blur-[100px] opacity-50 mix-blend-screen" />
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight mb-6">About Perfxcel</h1>
+          <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight mb-6">About PerfXcel</h1>
           <p className="text-xl text-secondary-300">
             Empowering professionals across the EMEA region with world-class, accredited training programs designed for the modern business landscape.
           </p>
@@ -23,7 +23,7 @@ export default function About() {
             <h2 className="text-4xl font-extrabold text-secondary-900 mb-6">A Legacy of Excellence in Corporate Education</h2>
             <div className="space-y-4 text-lg text-secondary-700">
               <p>
-                Founded in 2008, Perfxcel began with a simple mission: to bridge the gap between academic theory and practical corporate execution. What started as a small consultancy in Dubai has grown into a premier professional development institute serving the entire EMEA region.
+                Founded in 2008, PerfXcel began with a simple mission: to bridge the gap between academic theory and practical corporate execution. What started as a small consultancy in Dubai has grown into a premier professional development institute serving the entire EMEA region.
               </p>
               <p>
                 Over the past decade, we have partnered with thousands of organisations to upskill their workforce, delivering highly specialised training programs that drive tangible business results and individual career growth.
@@ -152,7 +152,7 @@ export default function About() {
           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
           <h2 className="text-3xl md:text-5xl font-extrabold mb-6 relative z-10">Ready to invest in your future?</h2>
           <p className="text-xl text-secondary-300 mb-10 max-w-2xl mx-auto relative z-10">
-            Join thousands of professionals who have accelerated their careers with Perfxcel.
+            Join thousands of professionals who have accelerated their careers with PerfXcel.
           </p>
           <Link to="/courses" className="inline-flex relative z-10 bg-primary-600 hover:bg-primary-700 text-white font-bold px-8 py-4 rounded-xl shadow-lg transition-colors">
             Browse All Courses <ArrowRight className="ml-2 w-5 h-5" />

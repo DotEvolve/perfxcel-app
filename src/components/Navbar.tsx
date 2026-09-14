@@ -39,7 +39,7 @@ export default function Navbar() {
               className="h-10 w-10 object-contain shadow-lg rounded-full"
             />
             <span className="font-bold text-2xl tracking-tight text-secondary-900">
-              Perfxcel<span className="text-primary-600">LMS</span>
+              PerfXcel
             </span>
           </Link>
 

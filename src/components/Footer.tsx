@@ -14,7 +14,7 @@ export default function Footer() {
               className="h-10 w-10 object-contain shadow-lg rounded-full"
             />
             <span className="font-bold text-2xl tracking-tight text-white">
-              Perfxcel<span className="text-primary-500">LMS</span>
+              PerfXcel
             </span>
           </Link>
           <p className="mb-6">
@@ -92,7 +92,7 @@ export default function Footer() {
 
       <div className="border-t border-white/10 py-6 max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center text-sm">
         <p className="mb-4 md:mb-0">
-          &copy; 2026 Perfxcel LMS by DotEvolve. All rights reserved.
+          &copy; 2026 PerfXcel by DotEvolve. All rights reserved.
         </p>
         <div className="flex gap-6">
           <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
