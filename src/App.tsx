@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { Routes, Route, Link, useNavigate, useParams } from "react-router-dom";
-import { getCourses, getCourse, getTaxonomies } from "./api";
+import { getCourses, getCourse, getTaxonomies, submitCourseInterest } from "./api";
 import type { Course, TaxonomyItem } from "./api";
-import { Search, MapPin, Tag, Layers, ArrowRight } from "lucide-react";
+import { Search, MapPin, Tag, Layers, ArrowRight, X } from "lucide-react";
+import { Turnstile } from "@marsidev/react-turnstile";
 
 export default function App() {
   return (
@@ -195,14 +196,39 @@ function CourseDetail() {
   const [course, setCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const [showModal, setShowModal] = useState(false);
+  const [formData, setFormData] = useState({ name: "", email: "", phone: "", company: "" });
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
+
   useEffect(() => {
     if (id) {
+      setLoading(true);
       getCourse(id)
         .then(setCourse)
         .catch(console.error)
         .finally(() => setLoading(false));
     }
   }, [id]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!turnstileToken) {
+      alert("Please complete the captcha.");
+      return;
+    }
+    setSubmitting(true);
+    try {
+      await submitCourseInterest(id!, formData, turnstileToken);
+      setSuccess(true);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to register interest. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   if (loading)
     return (
@@ -274,12 +300,70 @@ function CourseDetail() {
           </div>
 
           <div className="border-t border-gray-100 pt-8 flex justify-end">
-            <button className="bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg shadow-primary-500/30 transform transition hover:-translate-y-1">
+            <button 
+              onClick={() => setShowModal(true)}
+              className="bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg shadow-primary-500/30 transform transition hover:-translate-y-1"
+            >
               Register Interest
             </button>
           </div>
         </div>
       </div>
+
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/50 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl relative">
+            <button
+              onClick={() => setShowModal(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+            >
+              <X className="w-6 h-6" />
+            </button>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Register Interest</h2>
+            <p className="text-gray-500 mb-6">Leave your details and we will contact you about <strong>{course.title}</strong>.</p>
+            
+            {success ? (
+              <div className="bg-green-50 text-green-700 p-4 rounded-xl text-center font-medium">
+                Thank you! We've received your details.
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+                  <input required type="text" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary-500 outline-none" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+                  <input required type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary-500 outline-none" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                  <input type="text" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary-500 outline-none" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Company</label>
+                  <input type="text" value={formData.company} onChange={(e) => setFormData({...formData, company: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary-500 outline-none" />
+                </div>
+                
+                <div className="py-2">
+                  <Turnstile 
+                    siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY || "0x4AAAAAAEzpFPxOX1rj0qUL"} 
+                    onSuccess={(token) => setTurnstileToken(token)}
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={submitting || !turnstileToken}
+                  className="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition"
+                >
+                  {submitting ? "Submitting..." : "Submit Interest"}
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

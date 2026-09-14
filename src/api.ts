@@ -53,3 +53,12 @@ export const getTaxonomies = async () => {
   const response = await api.get("/taxonomies");
   return response.data.data;
 };
+
+export const submitCourseInterest = async (
+  courseId: string,
+  data: { name: string; email: string; phone?: string; company?: string },
+  turnstileToken: string
+) => {
+  const response = await api.post(`/courses/${courseId}/interest`, { ...data, turnstileToken });
+  return response.data;
+};
