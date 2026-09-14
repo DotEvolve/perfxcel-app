@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import Catalog from "./pages/Catalog";
 import CourseDetail from "./pages/CourseDetail";
 import About from "./pages/About";
+import Verify from "./pages/Verify";
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
           <Route path="/courses" element={<Catalog />} />
           <Route path="/courses/:id" element={<CourseDetail />} />
           <Route path="/about" element={<About />} />
+          <Route path="/verify" element={<Verify />} />
         </Routes>
       </main>
 

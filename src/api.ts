@@ -41,3 +41,8 @@ export const submitCourseInterest = async (
   const response = await api.post(`/courses/${courseId}/interest`, { ...data, turnstileToken });
   return response.data;
 };
+
+export const verifyCertificate = async (credentialId: string, turnstileToken: string) => {
+  const response = await api.post("/verify", { credential_id: credentialId, turnstileToken });
+  return response.data.data;
+};

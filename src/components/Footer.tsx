@@ -47,6 +47,9 @@ export default function Footer() {
               <Link to="/about" className="hover:text-white transition-colors">About Us</Link>
             </li>
             <li>
+              <Link to="/verify" className="hover:text-white transition-colors">Verify Certificate</Link>
+            </li>
+            <li>
               <a href="#contact" className="hover:text-white transition-colors">Contact Us</a>
             </li>
           </ul>
