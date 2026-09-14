@@ -16,8 +16,8 @@ export const getCourses = async (
   const params = new URLSearchParams();
   if (filters.category_id) params.append("category_id", filters.category_id);
   if (filters.city_id) params.append("city_id", filters.city_id);
-  if (filters.association_id)
-    params.append("association_id", filters.association_id);
+  if (filters.association_id) params.append("association_id", filters.association_id);
+  if (filters.delivery_mode_id) params.append("delivery_mode_id", filters.delivery_mode_id);
 
   const response = await api.get(`/courses?${params.toString()}`);
   return response.data.data.filter((c: Course) => c.is_published);

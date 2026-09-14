@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
 import { Linkedin, Twitter, Youtube } from "lucide-react";
+import { useTaxonomies } from "../hooks/useTaxonomies";
 
 export default function Footer() {
+  const { taxonomies, loading } = useTaxonomies();
+
   return (
     <footer className="bg-secondary-900 text-secondary-300">
       <div className="max-w-7xl mx-auto px-4 py-16 grid grid-cols-1 md:grid-cols-4 gap-12">
@@ -59,18 +62,20 @@ export default function Footer() {
         <div>
           <h4 className="text-white font-bold text-lg mb-6">Training Delivery</h4>
           <ul className="space-y-3">
-            <li>
-              <Link to="/courses?delivery=online" className="hover:text-white transition-colors">Online</Link>
-            </li>
-            <li>
-              <Link to="/courses?delivery=in-person" className="hover:text-white transition-colors">In-Person Classroom</Link>
-            </li>
-            <li>
-              <Link to="/courses?delivery=corporate" className="hover:text-white transition-colors">Corporate / In-House</Link>
-            </li>
-            <li>
-              <Link to="/courses?delivery=blended" className="hover:text-white transition-colors">Blended Learning</Link>
-            </li>
+            {loading ? (
+              <>
+                <li className="animate-pulse bg-secondary-700 h-4 rounded w-3/4"></li>
+                <li className="animate-pulse bg-secondary-700 h-4 rounded w-1/2"></li>
+              </>
+            ) : (
+              taxonomies?.delivery_modes?.slice(0, 4).map(mode => (
+                <li key={mode.id}>
+                  <Link to={`/courses?delivery=${mode.id}`} className="hover:text-white transition-colors">
+                    {mode.name}
+                  </Link>
+                </li>
+              ))
+            )}
           </ul>
         </div>
 

@@ -18,6 +18,7 @@ export default function Catalog() {
     category_id,
     city_id,
     association_id,
+    delivery_mode_id: delivery,
   };
 
   const { courses, loading: coursesLoading } = useCourses(filters);
@@ -38,10 +39,10 @@ export default function Catalog() {
 
   const hasActiveFilters = category_id || city_id || association_id || delivery;
 
-  // Helpers to get taxonomy names for chips
   const getCategoryName = (id: string) => taxonomies?.categories.find(c => c.id === id)?.name;
   const getLocationName = (id: string) => taxonomies?.cities.find(c => c.id === id)?.name;
   const getAssociationName = (id: string) => taxonomies?.associations.find(c => c.id === id)?.name;
+  const getDeliveryName = (id: string) => taxonomies?.delivery_modes.find(c => c.id === id)?.name;
 
   return (
     <div>
@@ -147,10 +148,11 @@ export default function Catalog() {
                   className="w-full bg-secondary-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none transition-shadow text-secondary-900"
                 >
                   <option value="">All Methods</option>
-                  <option value="online">Online</option>
-                  <option value="in-person">In-Person Classroom</option>
-                  <option value="corporate">Corporate / In-House</option>
-                  <option value="blended">Blended Learning</option>
+                  {taxonomies?.delivery_modes.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -189,7 +191,7 @@ export default function Catalog() {
               )}
               {delivery && (
                 <div className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-accent-50 text-accent-700 border border-accent-100">
-                  <span className="font-semibold mr-1">Delivery:</span> {delivery}
+                  <span className="font-semibold mr-1">Delivery:</span> {getDeliveryName(delivery) || "Loading..."}
                   <button onClick={() => updateFilter("delivery", "")} className="ml-2 hover:text-accent-900">
                     <X className="w-3 h-3" />
                   </button>

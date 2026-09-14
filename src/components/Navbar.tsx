@@ -154,26 +154,27 @@ export default function Navbar() {
                     <div>
                       <h4 className="font-bold text-secondary-900 border-b-2 border-primary-600 pb-2 mb-4 inline-block">By Delivery Type</h4>
                       <ul className="space-y-3">
-                        <li>
-                          <Link to="/courses?delivery=online" onClick={handleLinkClick} className="text-secondary-600 hover:text-primary-600 hover:pl-1 transition-all block text-sm">
-                            Online
-                          </Link>
-                        </li>
-                        <li>
-                          <Link to="/courses?delivery=in-person" onClick={handleLinkClick} className="text-secondary-600 hover:text-primary-600 hover:pl-1 transition-all block text-sm">
-                            In-Person Classroom
-                          </Link>
-                        </li>
-                        <li>
-                          <Link to="/courses?delivery=corporate" onClick={handleLinkClick} className="text-secondary-600 hover:text-primary-600 hover:pl-1 transition-all block text-sm">
-                            Corporate / In-House
-                          </Link>
-                        </li>
-                        <li>
-                          <Link to="/courses?delivery=blended" onClick={handleLinkClick} className="text-secondary-600 hover:text-primary-600 hover:pl-1 transition-all block text-sm">
-                            Blended Learning
-                          </Link>
-                        </li>
+                        {loading ? (
+                          <>
+                            <li className="animate-pulse bg-secondary-100 h-4 rounded w-3/4"></li>
+                            <li className="animate-pulse bg-secondary-100 h-4 rounded w-1/2"></li>
+                            <li className="animate-pulse bg-secondary-100 h-4 rounded w-5/6"></li>
+                          </>
+                        ) : error ? (
+                          <li className="text-red-500 text-sm">Failed to load</li>
+                        ) : (
+                          taxonomies?.delivery_modes?.slice(0, 8).map((mode) => (
+                            <li key={mode.id}>
+                              <Link 
+                                to={`/courses?delivery=${mode.id}`} 
+                                onClick={handleLinkClick}
+                                className="text-secondary-600 hover:text-primary-600 hover:pl-1 transition-all block text-sm"
+                              >
+                                {mode.name}
+                              </Link>
+                            </li>
+                          ))
+                        )}
                       </ul>
                     </div>
                   </div>
@@ -235,8 +236,11 @@ export default function Navbar() {
                 </div>
                 <div>
                   <div className="text-sm font-semibold text-secondary-500 uppercase tracking-wider mb-2">By Delivery Type</div>
-                  <Link to="/courses?delivery=online" onClick={handleLinkClick} className="block py-1.5 text-secondary-700">Online</Link>
-                  <Link to="/courses?delivery=in-person" onClick={handleLinkClick} className="block py-1.5 text-secondary-700">In-Person</Link>
+                  {taxonomies?.delivery_modes?.map(m => (
+                    <Link key={m.id} to={`/courses?delivery=${m.id}`} onClick={handleLinkClick} className="block py-1.5 text-secondary-700">
+                      {m.name}
+                    </Link>
+                  ))}
                 </div>
                 <Link to="/courses" onClick={handleLinkClick} className="block py-2 text-primary-600 font-bold">
                   View All Courses →
