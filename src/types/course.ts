@@ -10,6 +10,16 @@ export interface TaxonomyCollection {
   delivery_modes: TaxonomyItem[];
 }
 
+export interface CourseSchedule {
+  id: string;
+  course_id: string;
+  start_date: string;
+  end_date: string | null;
+  location: string | null;
+  method: string | null;
+  status: 'open' | 'guaranteed' | 'filling_fast' | 'closed' | 'cancelled';
+}
+
 export interface Course {
   id: string;
   title: string;
@@ -17,14 +27,14 @@ export interface Course {
   objectives: string;
   target_audience: string;
   is_published: boolean;
-  category_id: string | null;
-  city_id: string | null;
-  association_id: string | null;
-  delivery_mode_id: string | null;
-  categories?: TaxonomyItem | null;
-  cities?: TaxonomyItem | null;
-  associations?: TaxonomyItem | null;
-  delivery_modes?: TaxonomyItem | null;
+  cost: number | null;
+  duration: string | null;
+  categories?: TaxonomyItem[];
+  cities?: TaxonomyItem[];
+  associations?: TaxonomyItem[];
+  delivery_modes?: TaxonomyItem[];
+  course_schedules?: CourseSchedule[];
+  is_blended?: boolean;
 }
 
 export interface CourseFilters {
@@ -32,4 +42,7 @@ export interface CourseFilters {
   city_id?: string;
   association_id?: string;
   delivery_mode_id?: string;
+  search?: string;
+  page?: number;
+  limit?: number;
 }

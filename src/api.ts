@@ -46,3 +46,8 @@ export const verifyCertificate = async (credentialId: string, turnstileToken: st
   const response = await api.post("/verify", { credential_id: credentialId, turnstileToken });
   return response.data.data;
 };
+
+export const submitContact = async (data: { name: string; email: string; company?: string; message: string; course_id?: string; turnstileToken: string }) => {
+  const response = await api.post("/contact", data);
+  return response.data;
+};

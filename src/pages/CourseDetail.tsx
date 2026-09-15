@@ -72,21 +72,21 @@ export default function CourseDetail() {
           <div className="flex-1 min-w-0">
             {/* Badges */}
             <div className="flex flex-wrap gap-2 mb-6">
-              {course.categories && (
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary-50 text-primary-700">
-                  <Layers className="w-4 h-4 mr-1.5" /> {course.categories.name}
+              {course.categories?.map((c) => (
+                <span key={c.id} className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary-50 text-primary-700">
+                  <Layers className="w-4 h-4 mr-1.5" /> {c.name}
                 </span>
-              )}
-              {course.cities && (
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-secondary-100 text-secondary-800">
-                  <MapPin className="w-4 h-4 mr-1.5" /> {course.cities.name}
+              ))}
+              {course.cities?.map((c) => (
+                <span key={c.id} className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-secondary-100 text-secondary-800">
+                  <MapPin className="w-4 h-4 mr-1.5" /> {c.name}
                 </span>
-              )}
-              {course.associations && (
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-50 text-blue-700">
-                  <Tag className="w-4 h-4 mr-1.5" /> {course.associations.name}
+              ))}
+              {course.associations?.map((c) => (
+                <span key={c.id} className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-50 text-blue-700">
+                  <Tag className="w-4 h-4 mr-1.5" /> {c.name}
                 </span>
-              )}
+              ))}
             </div>
 
             <h1 className="text-4xl md:text-5xl font-extrabold text-secondary-900 mb-6 leading-tight">
@@ -118,38 +118,49 @@ export default function CourseDetail() {
               </div>
             </div>
 
-            {/* Schedule Placeholder */}
-            <div>
-              <h3 className="font-bold text-secondary-900 text-2xl mb-6 flex items-center">
-                <CalendarDays className="w-6 h-6 mr-2 text-primary-500" /> Upcoming Schedules
-              </h3>
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
-                  <thead>
-                    <tr className="bg-secondary-50 text-secondary-600 text-sm uppercase tracking-wider">
-                      <th className="px-6 py-4 font-semibold rounded-tl-xl">Date</th>
-                      <th className="px-6 py-4 font-semibold">Location</th>
-                      <th className="px-6 py-4 font-semibold">Method</th>
-                      <th className="px-6 py-4 font-semibold rounded-tr-xl">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-100">
-                    <tr className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4">Oct 12 - Oct 16, 2026</td>
-                      <td className="px-6 py-4">{course.cities?.name || "Riyadh"}</td>
-                      <td className="px-6 py-4">Classroom</td>
-                      <td className="px-6 py-4"><span className="text-green-600 font-medium bg-green-50 px-2.5 py-1 rounded-full text-xs">Guaranteed</span></td>
-                    </tr>
-                    <tr className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4">Nov 02 - Nov 06, 2026</td>
-                      <td className="px-6 py-4">Online (Zoom)</td>
-                      <td className="px-6 py-4">Virtual Live</td>
-                      <td className="px-6 py-4"><span className="text-amber-600 font-medium bg-amber-50 px-2.5 py-1 rounded-full text-xs">Filling Fast</span></td>
-                    </tr>
-                  </tbody>
-                </table>
+            {/* Schedules */}
+            {course.course_schedules && course.course_schedules.length > 0 && (
+              <div>
+                <h3 className="font-bold text-secondary-900 text-2xl mb-6 flex items-center">
+                  <CalendarDays className="w-6 h-6 mr-2 text-primary-500" /> Upcoming Schedules
+                </h3>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left border-collapse">
+                    <thead>
+                      <tr className="bg-secondary-50 text-secondary-600 text-sm uppercase tracking-wider">
+                        <th className="px-6 py-4 font-semibold rounded-tl-xl">Date</th>
+                        <th className="px-6 py-4 font-semibold">Location</th>
+                        <th className="px-6 py-4 font-semibold">Method</th>
+                        <th className="px-6 py-4 font-semibold rounded-tr-xl">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100">
+                      {course.course_schedules.map((schedule) => (
+                        <tr key={schedule.id} className="hover:bg-gray-50 transition-colors">
+                          <td className="px-6 py-4">
+                            {new Date(schedule.start_date).toLocaleDateString()} 
+                            {schedule.end_date && ` - ${new Date(schedule.end_date).toLocaleDateString()}`}
+                          </td>
+                          <td className="px-6 py-4">{schedule.location || "TBA"}</td>
+                          <td className="px-6 py-4">{schedule.method || "TBA"}</td>
+                          <td className="px-6 py-4">
+                            <span className={`font-medium px-2.5 py-1 rounded-full text-xs ${
+                              schedule.status === 'guaranteed' ? 'text-green-600 bg-green-50' :
+                              schedule.status === 'filling_fast' ? 'text-amber-600 bg-amber-50' :
+                              schedule.status === 'closed' ? 'text-red-600 bg-red-50' :
+                              schedule.status === 'cancelled' ? 'text-gray-600 bg-gray-100' :
+                              'text-blue-600 bg-blue-50'
+                            }`}>
+                              {schedule.status.replace('_', ' ').toUpperCase()}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
           {/* Sidebar (Right, 1/3) */}
@@ -157,25 +168,35 @@ export default function CourseDetail() {
             <div className="glass-panel bg-white p-8 rounded-3xl border border-gray-100 shadow-xl sticky top-28">
               <div className="text-center pb-6 border-b border-gray-100 mb-6">
                 <div className="text-sm text-secondary-500 font-bold uppercase tracking-wider mb-2">Investment</div>
-                <div className="text-4xl font-extrabold text-secondary-900">$3,450 <span className="text-lg text-secondary-400 font-normal">USD</span></div>
-                <div className="text-xs text-secondary-400 mt-1">Excludes applicable taxes</div>
+                {course.cost ? (
+                  <>
+                    <div className="text-4xl font-extrabold text-secondary-900">${course.cost} <span className="text-lg text-secondary-400 font-normal">USD</span></div>
+                    <div className="text-xs text-secondary-400 mt-1">Excludes applicable taxes</div>
+                  </>
+                ) : (
+                  <div className="text-2xl font-bold text-secondary-900">Contact for Pricing</div>
+                )}
               </div>
 
               <ul className="space-y-4 mb-8">
-                <li className="flex items-start text-secondary-700">
-                  <Clock className="w-5 h-5 mr-3 text-primary-500 shrink-0 mt-0.5" />
-                  <div>
-                    <span className="block font-bold text-secondary-900">5 Days</span>
-                    <span className="text-sm">Intensive professional training</span>
-                  </div>
-                </li>
-                <li className="flex items-start text-secondary-700">
-                  <MonitorPlay className="w-5 h-5 mr-3 text-primary-500 shrink-0 mt-0.5" />
-                  <div>
-                    <span className="block font-bold text-secondary-900">Blended Option</span>
-                    <span className="text-sm">Available online and in-person</span>
-                  </div>
-                </li>
+                {course.duration && (
+                  <li className="flex items-start text-secondary-700">
+                    <Clock className="w-5 h-5 mr-3 text-primary-500 shrink-0 mt-0.5" />
+                    <div>
+                      <span className="block font-bold text-secondary-900">{course.duration}</span>
+                      <span className="text-sm">Intensive professional training</span>
+                    </div>
+                  </li>
+                )}
+                {course.is_blended && (
+                  <li className="flex items-start text-secondary-700">
+                    <MonitorPlay className="w-5 h-5 mr-3 text-primary-500 shrink-0 mt-0.5" />
+                    <div>
+                      <span className="block font-bold text-secondary-900">Blended Option</span>
+                      <span className="text-sm">Available online and in-person</span>
+                    </div>
+                  </li>
+                )}
                 <li className="flex items-start text-secondary-700">
                   <FileText className="w-5 h-5 mr-3 text-primary-500 shrink-0 mt-0.5" />
                   <div>
@@ -193,7 +214,7 @@ export default function CourseDetail() {
               </button>
 
               <div className="mt-4 text-center">
-                <Link to="/contact" className="text-sm text-secondary-500 hover:text-primary-600 font-medium underline">
+                <Link to={`/contact?course_id=${course.id}`} className="text-sm text-secondary-500 hover:text-primary-600 font-medium underline">
                   Enquire for corporate groups
                 </Link>
               </div>
