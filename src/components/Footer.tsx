@@ -64,7 +64,7 @@ export default function Footer() {
               <Link to="/verify" className="hover:text-white transition-colors">Verify Certificate</Link>
             </li>
             <li>
-              <a href="#contact" className="hover:text-white transition-colors">Contact Us</a>
+              <Link to="/contact" className="hover:text-white transition-colors">Contact Us</Link>
             </li>
           </ul>
         </div>
@@ -94,7 +94,7 @@ export default function Footer() {
         <div>
           <h4 className="text-white font-bold text-lg mb-6">Get in Touch</h4>
           <address className="not-italic space-y-3">
-            <p>Dubai, United Arab Emirates</p>
+            <p>Riyadh, Kingdom of Saudi Arabia</p>
             <p>
               <a href="mailto:info@perfxcel.com" className="hover:text-white transition-colors">
                 info@perfxcel.com
@@ -111,11 +111,12 @@ export default function Footer() {
 
       <div className="border-t border-white/10 py-6 max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center text-sm">
         <p className="mb-4 md:mb-0">
-          &copy; 2026 PerfXcel by DotEvolve. All rights reserved.
+          &copy; 2026 PerfXcel by <a href="https://dotevolve.net" target="_blank" rel="noopener noreferrer" className="hover:text-primary-500 underline transition-colors">DotEvolve</a>. All rights reserved.
         </p>
         <div className="flex gap-6">
-          <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-          <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
+          <Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
+          <Link to="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
+          <Link to="/cookies" className="hover:text-white transition-colors">Cookie Policy</Link>
         </div>
       </div>
     </footer>

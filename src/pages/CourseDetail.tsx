@@ -136,7 +136,7 @@ export default function CourseDetail() {
                   <tbody className="divide-y divide-gray-100">
                     <tr className="hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-4">Oct 12 - Oct 16, 2026</td>
-                      <td className="px-6 py-4">{course.cities?.name || "Dubai"}</td>
+                      <td className="px-6 py-4">{course.cities?.name || "Riyadh"}</td>
                       <td className="px-6 py-4">Classroom</td>
                       <td className="px-6 py-4"><span className="text-green-600 font-medium bg-green-50 px-2.5 py-1 rounded-full text-xs">Guaranteed</span></td>
                     </tr>

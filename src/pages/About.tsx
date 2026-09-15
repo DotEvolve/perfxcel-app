@@ -23,7 +23,7 @@ export default function About() {
             <h2 className="text-4xl font-extrabold text-secondary-900 mb-6">A Legacy of Excellence in Corporate Education</h2>
             <div className="space-y-4 text-lg text-secondary-700">
               <p>
-                Founded in 2008, PerfXcel began with a simple mission: to bridge the gap between academic theory and practical corporate execution. What started as a small consultancy in Dubai has grown into a premier professional development institute serving the entire EMEA region.
+                Founded in 2008, PerfXcel began with a simple mission: to bridge the gap between academic theory and practical corporate execution. What started as a small consultancy in Riyadh has grown into a premier professional development institute serving the entire EMEA region.
               </p>
               <p>
                 Over the past decade, we have partnered with thousands of organisations to upskill their workforce, delivering highly specialised training programs that drive tangible business results and individual career growth.
@@ -46,7 +46,7 @@ export default function About() {
               </li>
               <li className="flex justify-between items-center border-b border-primary-100 pb-4">
                 <span className="text-secondary-600 font-medium">Headquarters</span>
-                <span className="text-xl font-bold text-secondary-900">Dubai, UAE</span>
+                <span className="text-xl font-bold text-secondary-900">Riyadh, KSA</span>
               </li>
               <li className="flex justify-between items-center border-b border-primary-100 pb-4">
                 <span className="text-secondary-600 font-medium">Training Days / Year</span>
