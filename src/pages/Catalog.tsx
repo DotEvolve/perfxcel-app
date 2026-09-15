@@ -45,7 +45,7 @@ export default function Catalog() {
   const getDeliveryName = (id: string) => taxonomies?.delivery_modes.find(c => c.id === id)?.name;
 
   return (
-    <div>
+    <div className="pt-28">
       {/* Hero Band */}
       <div className="bg-secondary-900 text-white py-12 px-4 sm:px-6 lg:px-8 mb-10 rounded-3xl overflow-hidden relative shadow-lg">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>

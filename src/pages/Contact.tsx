@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { submitContact } from "../api";
+import { submitContact, getCourse } from "../api";
+import type { Course } from "../api";
 import { Turnstile } from "@marsidev/react-turnstile";
 import { CheckCircle2, AlertCircle } from "lucide-react";
 
 export default function Contact() {
   const [searchParams] = useSearchParams();
   const courseId = searchParams.get("course_id") || undefined;
+  const [course, setCourse] = useState<Course | null>(null);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -18,6 +20,20 @@ export default function Contact() {
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
   const [turnstileToken, setTurnstileToken] = useState("");
+
+  useEffect(() => {
+    if (courseId) {
+      getCourse(courseId)
+        .then((data) => {
+          setCourse(data);
+          setFormData((prev) => ({
+            ...prev,
+            message: prev.message || `I am enquiring about corporate group training for the course: ${data.title}`
+          }));
+        })
+        .catch(console.error);
+    }
+  }, [courseId]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,12 +78,12 @@ export default function Contact() {
   }
 
   return (
-    <div className="py-20 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
+    <div className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
       <div className="text-center mb-12">
         <h1 className="text-4xl font-extrabold text-secondary-900 mb-4">Contact Us</h1>
         <p className="text-lg text-secondary-600 max-w-2xl mx-auto">
-          {courseId 
-            ? "Get in touch with us regarding corporate group training for this course."
+          {course
+            ? `Get in touch with us regarding corporate group training for: ${course.title}`
             : "Have questions about our training programs or want to discuss a customized solution for your team? We're here to help."}
         </p>
       </div>

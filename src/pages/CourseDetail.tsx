@@ -51,9 +51,9 @@ export default function CourseDetail() {
     );
 
   return (
-    <div className="pb-24">
+    <div className="pb-24 pt-28">
       {/* Breadcrumb Area */}
-      <div className="bg-secondary-50 border-b border-gray-200 py-4 mb-8">
+      <div className="bg-secondary-50 border-b border-gray-200 py-4 mb-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center text-sm font-medium text-secondary-500 overflow-x-auto whitespace-nowrap hide-scrollbar">
             <Link to="/" className="hover:text-primary-600 transition-colors">Home</Link>
