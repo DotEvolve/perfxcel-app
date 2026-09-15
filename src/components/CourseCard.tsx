@@ -6,7 +6,7 @@ export default function CourseCard({ course }: { course: Course }) {
   const navigate = useNavigate();
   return (
     <div
-      onClick={() => navigate(`/courses/${course.id}`)}
+      onClick={() => navigate(`/courses/${course.slug || course.id}`)}
       className="glass-panel rounded-2xl overflow-hidden hover-lift cursor-pointer flex flex-col h-full bg-white transition-all duration-300"
     >
       {/* Gradient accent bar */}
@@ -67,7 +67,7 @@ export default function CourseCard({ course }: { course: Course }) {
                 // We'll just navigate to the detail page for now,
                 // but the design says "Register Interest micro-CTA".
                 // Since clicking the card goes to detail, we can just say "View Details" here.
-                navigate(`/courses/${course.id}`);
+                navigate(`/courses/${course.slug || course.id}`);
               }}
               className="text-xs font-bold text-primary-600 bg-primary-50 hover:bg-primary-100 px-3 py-1.5 rounded-lg transition-colors"
             >
