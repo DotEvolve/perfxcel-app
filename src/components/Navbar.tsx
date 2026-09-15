@@ -203,6 +203,11 @@ export default function Navbar() {
               )}
             </li>
             <li>
+              <Link to="/training-plan" onClick={handleLinkClick} className="text-secondary-800 hover:text-primary-600 font-medium transition-colors">
+                Training Plan
+              </Link>
+            </li>
+            <li>
               <Link to="/about" onClick={handleLinkClick} className="text-secondary-800 hover:text-primary-600 font-medium transition-colors">
                 About
               </Link>
@@ -258,6 +263,10 @@ export default function Navbar() {
                 </Link>
               </div>
             </div>
+
+            <Link to="/training-plan" onClick={handleLinkClick} className="block px-3 py-4 text-base font-bold text-secondary-900 border-b border-gray-100">
+              Training Plan
+            </Link>
 
             <Link to="/about" onClick={handleLinkClick} className="block px-3 py-4 text-base font-bold text-secondary-900 border-b border-gray-100">
               About
