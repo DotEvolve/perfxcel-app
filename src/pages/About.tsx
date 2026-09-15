@@ -62,7 +62,7 @@ export default function About() {
 
         {/* Mission & Vision */}
         <section className="grid md:grid-cols-2 gap-8">
-          <div className="glass-panel rounded-3xl p-10 bg-secondary-900 text-white relative overflow-hidden">
+          <div className="rounded-3xl p-10 bg-secondary-900 text-white relative overflow-hidden shadow-xl">
             <div className="absolute -bottom-10 -right-10 text-white/5">
               <Target className="w-64 h-64" />
             </div>
@@ -72,7 +72,7 @@ export default function About() {
               To empower professionals and organisations by delivering practical, industry-leading education that drives measurable performance improvements and career advancement.
             </p>
           </div>
-          <div className="glass-panel rounded-3xl p-10 bg-primary-600 text-white relative overflow-hidden">
+          <div className="rounded-3xl p-10 bg-primary-600 text-white relative overflow-hidden shadow-xl">
              <div className="absolute -bottom-10 -right-10 text-white/10">
               <Compass className="w-64 h-64" />
             </div>
