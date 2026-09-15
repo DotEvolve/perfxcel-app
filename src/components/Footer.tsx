@@ -14,11 +14,22 @@ export default function Footer() {
             <img
               src="/logo.png"
               alt="PerfXcel Logo"
-              className="h-10 w-10 object-contain shadow-lg rounded-full"
+              className="h-14 w-14 object-contain drop-shadow-md"
             />
-            <span className="font-bold text-2xl tracking-tight text-white">
-              PerfXcel
-            </span>
+            <div className="flex flex-col justify-center mt-1">
+              <span 
+                className="text-3xl text-white tracking-wide" 
+                style={{ fontFamily: '"Shrikhand", cursive', lineHeight: '1' }}
+              >
+                PerfXcel
+              </span>
+              <span 
+                className="text-xs font-bold text-accent-500 tracking-wide italic"
+                style={{ lineHeight: '1' }}
+              >
+                Performance Excellence
+              </span>
+            </div>
           </Link>
           <p className="mb-6">
             Empowering professionals across the EMEA region with world-class, accredited training programs.

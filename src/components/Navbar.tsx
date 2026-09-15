@@ -36,11 +36,22 @@ export default function Navbar() {
             <img
               src="/logo.png"
               alt="PerfXcel Logo"
-              className="h-10 w-10 object-contain shadow-lg rounded-full"
+              className="h-16 w-16 object-contain drop-shadow-md"
             />
-            <span className="font-bold text-2xl tracking-tight text-secondary-900">
-              PerfXcel
-            </span>
+            <div className="flex flex-col justify-center mt-1">
+              <span 
+                className="text-4xl text-primary-900 tracking-wide" 
+                style={{ fontFamily: '"Shrikhand", cursive', lineHeight: '1' }}
+              >
+                PerfXcel
+              </span>
+              <span 
+                className="text-[13px] font-bold text-accent-500 tracking-wide italic"
+                style={{ lineHeight: '1' }}
+              >
+                Performance Excellence
+              </span>
+            </div>
           </Link>
 
           {/* Desktop Nav Links */}
