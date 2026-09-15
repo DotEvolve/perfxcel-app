@@ -136,14 +136,68 @@ export default function About() {
         </section>
 
         {/* Accreditations */}
-        <section className="bg-secondary-50 rounded-3xl p-12 text-center">
-          <h2 className="text-2xl font-bold text-secondary-900 mb-8">Accreditations & Partners</h2>
-          <div className="flex flex-wrap justify-center gap-6">
-            {['PMI', 'CIPD', 'ILM', 'CIMA', 'ISO 9001', 'SHRM'].map((cert, i) => (
-              <div key={i} className="bg-white px-8 py-4 rounded-xl border border-gray-200 font-extrabold text-secondary-400 text-xl tracking-wider shadow-sm hover:text-primary-500 hover:border-primary-200 transition-colors cursor-default">
-                {cert}
-              </div>
-            ))}
+        <section className="bg-secondary-50 py-16 text-center overflow-hidden">
+          <h2 className="text-2xl font-bold text-secondary-900 mb-12">Accreditations & Partners</h2>
+          
+          <div className="relative w-full overflow-hidden">
+            <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-secondary-50 to-transparent z-10 pointer-events-none"></div>
+            <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-secondary-50 to-transparent z-10 pointer-events-none"></div>
+            
+            <div className="animate-marquee hover:pause flex items-center">
+              {/* Double array for seamless loop */}
+              {[1, 2].map((set) => (
+                <div key={set} className="flex gap-12 px-6 items-center shrink-0">
+                  {/* PMI */}
+                  <div className="bg-white px-8 py-4 rounded-xl border border-gray-100 shadow-sm flex items-center justify-center w-48 h-20 shrink-0">
+                    <svg viewBox="0 0 100 40" className="h-10 w-full max-w-[100px]">
+                      <circle cx="20" cy="20" r="16" fill="#1e3a8a"/>
+                      <text x="20" y="25" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">P</text>
+                      <text x="45" y="26" fill="#1e3a8a" fontSize="22" fontWeight="900">PMI</text>
+                    </svg>
+                  </div>
+                  
+                  {/* CIPD */}
+                  <div className="bg-white px-8 py-4 rounded-xl border border-gray-100 shadow-sm flex items-center justify-center w-48 h-20 shrink-0">
+                    <svg viewBox="0 0 100 40" className="h-10 w-full max-w-[100px]">
+                      <rect x="0" y="8" width="24" height="24" rx="4" fill="#0369a1"/>
+                      <text x="35" y="26" fill="#0369a1" fontSize="22" fontWeight="800">CIPD</text>
+                    </svg>
+                  </div>
+                  
+                  {/* ILM */}
+                  <div className="bg-white px-8 py-4 rounded-xl border border-gray-100 shadow-sm flex items-center justify-center w-48 h-20 shrink-0">
+                    <svg viewBox="0 0 100 40" className="h-10 w-full max-w-[100px]">
+                      <path d="M0 20 Q 10 0 20 20 T 40 20" stroke="#0f766e" strokeWidth="4" fill="none"/>
+                      <text x="45" y="26" fill="#0f766e" fontSize="22" fontWeight="800">ILM</text>
+                    </svg>
+                  </div>
+                  
+                  {/* CIMA */}
+                  <div className="bg-white px-8 py-4 rounded-xl border border-gray-100 shadow-sm flex items-center justify-center w-48 h-20 shrink-0">
+                    <svg viewBox="0 0 110 40" className="h-10 w-full max-w-[110px]">
+                      <rect x="0" y="0" width="110" height="40" fill="#334155" rx="4"/>
+                      <text x="55" y="26" fill="#fff" fontSize="18" fontWeight="700" letterSpacing="2" textAnchor="middle">CIMA</text>
+                    </svg>
+                  </div>
+                  
+                  {/* ISO 9001 */}
+                  <div className="bg-white px-8 py-4 rounded-xl border border-gray-100 shadow-sm flex items-center justify-center w-48 h-20 shrink-0">
+                    <svg viewBox="0 0 130 40" className="h-10 w-full max-w-[130px]">
+                      <circle cx="20" cy="20" r="14" stroke="#be123c" strokeWidth="4" fill="none"/>
+                      <text x="45" y="26" fill="#be123c" fontSize="20" fontWeight="900">ISO 9001</text>
+                    </svg>
+                  </div>
+                  
+                  {/* SHRM */}
+                  <div className="bg-white px-8 py-4 rounded-xl border border-gray-100 shadow-sm flex items-center justify-center w-48 h-20 shrink-0">
+                    <svg viewBox="0 0 100 40" className="h-10 w-full max-w-[100px]">
+                      <polygon points="20,5 35,35 5,35" fill="#4338ca"/>
+                      <text x="45" y="26" fill="#4338ca" fontSize="22" fontWeight="900">SHRM</text>
+                    </svg>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
