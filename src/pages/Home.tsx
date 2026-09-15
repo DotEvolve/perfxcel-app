@@ -35,11 +35,11 @@ export default function Home() {
         
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-white pt-20 pb-16">
           <div className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 border border-white/20 text-sm font-medium mb-8">
-            <span className="text-primary-400 mr-2">✦</span> 25+ Years of Professional Excellence
+            <span className="text-accent-400 mr-2">✦</span> 25+ Years of Professional Excellence
           </div>
           <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight leading-tight mb-6">
             Elevate Your<br />
-            <span className="text-primary-400">Professional</span> Excellence
+            <span className="text-accent-400">Professional</span> Excellence
           </h1>
           <p className="text-xl text-secondary-300 max-w-2xl mb-10">
             Over 1,200+ accredited training programs across the MENA & EMEA region, 
@@ -47,7 +47,7 @@ export default function Home() {
           </p>
           
           <div className="flex flex-wrap gap-4 mb-20">
-            <Link to="/courses" className="px-8 py-4 rounded-xl font-bold text-white bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 shadow-lg shadow-primary-500/30 transition-all hover:-translate-y-0.5">
+            <Link to="/courses" className="px-8 py-4 rounded-xl font-bold text-secondary-900 bg-accent-500 hover:bg-accent-600 shadow-lg shadow-accent-500/30 transition-all hover:-translate-y-0.5">
               Browse Courses &rarr;
             </Link>
             <Link to="/about" className="px-8 py-4 rounded-xl font-bold text-white bg-white/10 hover:bg-white/20 border border-white/20 transition-all">
@@ -127,7 +127,7 @@ export default function Home() {
           <p className="text-xl text-primary-100 mb-10 max-w-2xl mx-auto">
             Bespoke corporate training programs designed specifically for your organisation's unique challenges and strategic goals.
           </p>
-          <button className="bg-white text-primary-700 font-bold px-8 py-4 rounded-xl shadow-xl hover:bg-primary-50 transition-colors">
+          <button className="bg-accent-500 text-secondary-900 font-bold px-8 py-4 rounded-xl shadow-xl hover:bg-accent-600 transition-colors">
             Request a Proposal &rarr;
           </button>
         </div>

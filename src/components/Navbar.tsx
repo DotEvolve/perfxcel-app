@@ -203,7 +203,7 @@ export default function Navbar() {
             <Link 
               to="/courses" 
               onClick={handleLinkClick}
-              className="hidden md:inline-flex items-center justify-center px-6 py-2.5 border border-transparent text-sm font-bold rounded-xl text-white bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-700 hover:to-primary-600 shadow-md transition-all hover:shadow-lg hover:-translate-y-0.5"
+              className="hidden md:inline-flex items-center justify-center px-6 py-2.5 border border-transparent text-sm font-bold rounded-xl text-secondary-900 bg-accent-500 hover:bg-accent-600 shadow-md transition-all hover:shadow-lg hover:-translate-y-0.5"
             >
               Browse All Courses <ArrowRight className="ml-2 w-4 h-4" />
             </Link>
@@ -253,7 +253,7 @@ export default function Navbar() {
             </Link>
             
             <div className="pt-6 px-3">
-              <Link to="/courses" onClick={handleLinkClick} className="w-full inline-flex justify-center items-center px-6 py-3 border border-transparent text-base font-bold rounded-xl text-white bg-primary-600 hover:bg-primary-700">
+              <Link to="/courses" onClick={handleLinkClick} className="w-full inline-flex justify-center items-center px-6 py-3 border border-transparent text-base font-bold rounded-xl text-secondary-900 bg-accent-500 hover:bg-accent-600">
                 Browse All Courses
               </Link>
             </div>

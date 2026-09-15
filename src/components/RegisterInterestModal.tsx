@@ -124,7 +124,7 @@ export default function RegisterInterestModal({
             <button
               type="submit"
               disabled={submitting || !turnstileToken}
-              className="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition"
+              className="w-full bg-accent-500 hover:bg-accent-600 text-secondary-900 font-bold py-3 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition"
             >
               {submitting ? "Submitting..." : "Submit Interest"}
             </button>

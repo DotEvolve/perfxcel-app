@@ -187,7 +187,7 @@ export default function CourseDetail() {
 
               <button 
                 onClick={() => setShowModal(true)}
-                className="w-full bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-700 hover:to-primary-600 text-white font-bold py-4 rounded-xl shadow-lg shadow-primary-500/30 transform transition hover:-translate-y-0.5"
+                className="w-full bg-accent-500 hover:bg-accent-600 text-secondary-900 font-bold py-4 rounded-xl shadow-lg shadow-accent-500/30 transform transition hover:-translate-y-0.5"
               >
                 Register Interest
               </button>

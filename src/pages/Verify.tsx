@@ -87,7 +87,7 @@ export default function Verify() {
             <button
               type="submit"
               disabled={!credentialId.trim() || !turnstileToken || loading}
-              className="w-full rounded-md bg-primary-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="w-full rounded-md bg-accent-500 px-3.5 py-2.5 text-center text-sm font-semibold text-secondary-900 shadow-sm hover:bg-accent-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {loading ? "Verifying..." : "Verify Certificate"}
             </button>
