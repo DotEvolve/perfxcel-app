@@ -1,3 +1,4 @@
+/// <reference types="vite/client" />
 import axios from "axios";
 import type { Course, TaxonomyItem, CourseFilters } from "./types/course";
 
