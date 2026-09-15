@@ -78,7 +78,7 @@ export default function Contact() {
   }
 
   return (
-    <div className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
+    <div className="pt-8 pb-20 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
       <div className="text-center mb-12">
         <h1 className="text-4xl font-extrabold text-secondary-900 mb-4">Contact Us</h1>
         <p className="text-lg text-secondary-600 max-w-2xl mx-auto">
