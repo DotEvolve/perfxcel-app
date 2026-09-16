@@ -7,16 +7,19 @@ inclusion: always
 ```
 src/
 ├── api.ts              # Axios instance + all API functions — single source of truth for HTTP calls
-├── App.tsx             # Root component — BrowserRouter routes, Navbar, Footer, all route definitions
+├── App.tsx             # Root component — BrowserRouter routes, Navbar, Footer, Sentry.ErrorBoundary
+├── config/
+│   └── sentry.ts       # Sentry initialisation — imported once in main.tsx before rendering
 ├── components/         # Shared UI components (Navbar, Footer, CourseCard, RegisterInterestModal)
-├── data/               # Static mock data (e.g. mockCourses.ts) used for development/fallback
+├── data/               # Static mock data (e.g. mockCourses.ts) — development/fallback only
 ├── hooks/              # Domain-scoped data-fetching hooks (e.g. useCourses, useTaxonomies)
 ├── pages/              # Route-level page components — one file per route, kept thin
 ├── types/              # Shared TypeScript interfaces and types
 │   ├── course.ts       # Course, CourseFilters, TaxonomyItem interfaces
 │   └── index.ts        # Re-exports all types
 ├── index.css           # Global styles (Tailwind base)
-└── main.tsx            # Entry point
+├── main.tsx            # Entry point — imports config/sentry first, then renders the app
+└── vitest.setup.ts     # Global Vitest setup — jest-dom matchers + Sentry mock
 ```
 
 ## Routing
@@ -39,6 +42,8 @@ src/
 - Exported functions: `getCourses`, `getCourse`, `getTaxonomies`, `submitCourseInterest`, `verifyCertificate`, `submitContact`.
 - Hooks call these exported functions — they never construct Axios requests themselves.
 - Turnstile tokens are passed as parameters to submission functions (`submitCourseInterest`, `submitContact`, `verifyCertificate`).
+- The response interceptor reads `x-correlation-id` from successful responses and sets it as a Sentry tag.
+- The error interceptor captures 5xx and network errors to Sentry with `api.url`, `api.method`, and `api.status_code` tags. 4xx errors are **not** captured — they are expected client-side failures.
 
 ## Hooks
 
@@ -51,6 +56,47 @@ src/
 - Strict mode is enabled — no `any` without an explicit justification comment.
 - Re-export types through `src/types/index.ts` for clean consumer imports.
 
+## Error Handling and Observability
+
+Sentry is integrated exclusively via `@dotevolve/error-utils`. **Never configure `@sentry/react` or any other Sentry SDK directly.**
+
+### Initialisation
+
+- `src/config/sentry.ts` calls `initializeReactSentry` from `@dotevolve/error-utils/react`.
+- It is imported as the **very first import** in `src/main.tsx`, before React or any app module.
+- Initialisation is guarded on `VITE_SENTRY_DSN` — it is a no-op when the DSN is absent (local dev).
+
+### Features enabled
+
+| Feature | Detail |
+|---|---|
+| Error tracking | All unhandled exceptions via `Sentry.ErrorBoundary` in `App.tsx` |
+| Browser tracing | Page loads, navigation, HTTP requests (100% sample rate) |
+| Browser profiling | JS execution profiles (100% sample rate) |
+| Session replay | 10% of sessions; 100% of sessions containing an error |
+| Console log capture | `log`, `warn`, `error` forwarded to Sentry Logs |
+| API error capture | 5xx responses captured in `src/api.ts` interceptor with request tags |
+| Correlation ID | `x-correlation-id` from API responses tagged on the Sentry scope |
+
+### Error boundary
+
+`App.tsx` wraps the entire route tree in `<Sentry.ErrorBoundary fallback={<ErrorFallback />}>`. The `ErrorFallback` component renders an inline error message with a page-reload button.
+
+### Source map upload
+
+`vite.config.ts` uses `sentryVitePlugin` with `build.sourcemap: true`. Source maps are uploaded to Sentry on production builds when `SENTRY_ORG`, `SENTRY_PROJECT`, and `SENTRY_AUTH_TOKEN` are set (CI only).
+
+### Environment variables
+
+| Variable | Where used | Purpose |
+|---|---|---|
+| `VITE_SENTRY_DSN` | `src/config/sentry.ts` | Runtime DSN — required for Sentry to activate |
+| `VITE_SENTRY_ENVIRONMENT` | `src/config/sentry.ts` | Deployment environment tag (falls back to `import.meta.env.MODE`) |
+| `VITE_APP_VERSION` | `src/config/sentry.ts` | Release identifier for source map association |
+| `SENTRY_ORG` | `vite.config.ts` | Sentry org slug — build-time only |
+| `SENTRY_PROJECT` | `vite.config.ts` | Sentry project slug — build-time only |
+| `SENTRY_AUTH_TOKEN` | `vite.config.ts` | Source map upload token — build-time only (CI) |
+
 ## Styling
 
 - Tailwind CSS v4 via `@tailwindcss/vite` — **no `tailwind.config.js`**.
@@ -62,13 +108,10 @@ src/
 - `src/data/` holds static mock data for local development or UI stubs.
 - Do not import mock data in production code paths — keep it isolated to development use.
 
-## Error Handling
-
-- Use `@dotevolve/error-utils` for error handling. Do not configure Sentry directly.
-
 ## Testing
 
 - Vitest with `@testing-library/react` and `jsdom`.
+- Global setup is in `src/vitest.setup.ts` — provides jest-dom matchers and mocks `@dotevolve/error-utils/react` so Sentry does not initialise during tests.
 - Property-based tests use `fast-check` and the `.property.test.tsx` suffix.
 - Run with `npm test` (single pass) or `npm run test:coverage` for coverage.
 
@@ -78,6 +121,7 @@ src/
 |---|---|
 | Routing | react-router-dom v7 |
 | HTTP | axios |
+| Observability | @dotevolve/error-utils (Sentry) |
 | Styling | Tailwind CSS v4 |
 | Bot protection | @marsidev/react-turnstile |
 | PDF | @react-pdf/renderer, react-pdf |
