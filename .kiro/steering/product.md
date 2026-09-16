@@ -2,81 +2,91 @@
 inclusion: always
 ---
 
-# Product: Perfxcel LMS Frontend
+# Product: Perfxcel App
 
-Main tenant-facing SPA for the Perfxcel LMS compliance workflow platform. Tenants use it to run compliance workflows, generate documents from templates, and manage their company profile.
+Public-facing marketing and course catalog SPA for PerfXcel (Performance Excellence). Prospective learners browse the course catalog, filter by taxonomy, view course details, register interest, verify certificates, and contact the team. There is no authentication — all routes are public.
 
-## Core Capabilities
+## Tech Stack
 
-- **Workflow Management**: Browse platform workflows and manage custom tenant workflows (`/workflows`, `/workflows/manage`, `/workflows/:id`)
-- **Document Generation**: Generate PDF documents from templates; manage custom document templates (`/documents`, `/documents/:id`, `/documents/manage`)
-- **Document Inbox**: Receive and review incoming documents (`/inbox`)
-- **Vault**: Secure document storage (`/vault`)
-- **Company Profile**: Manage tenant company details (`/profile`)
-- **MCA Mocks**: MCA form mock pages for integration testing (`/mca-mocks/*`)
-- **Dashboard**: Tenant-specific overview of activity and status (`/`)
+| Concern | Library |
+|---|---|
+| Framework | React 19 + Vite 8 |
+| Language | TypeScript 5.9 (strict mode) |
+| Routing | React Router v7 (`BrowserRouter` in `main.tsx`) |
+| Styling | Tailwind CSS 4.x (no `tailwind.config.js`) |
+| HTTP | Axios via `src/api.ts` |
+| Bot protection | Cloudflare Turnstile (`@marsidev/react-turnstile`) |
+| Error monitoring | Sentry (via `@sentry/vite-plugin` + `@dotevolve/error-utils`) |
+| Icons | `lucide-react` |
+| Testing | Vitest 4 + jsdom + `@testing-library/react` + `fast-check` |
 
-## Users
+## Project Structure
 
-- Tenant organizations (companies using the Perfxcel LMS platform)
-- End users within those tenant organizations
+```
+src/
+├── App.tsx          # Root layout (Navbar + <Routes> + Footer) — all routes defined here
+├── main.tsx         # Entry point; mounts <BrowserRouter>
+├── api.ts           # Axios instance + all API call functions
+├── index.css        # Global styles and Tailwind base
+├── components/      # Shared UI components (Navbar, Footer, CourseCard, RegisterInterestModal)
+├── hooks/           # Domain-scoped data hooks (useCourses, useTaxonomies)
+├── pages/           # Full-page components (one per route)
+├── types/           # TypeScript interfaces (course.ts, index.ts)
+└── __tests__/       # Vitest tests
+```
 
 ## Route Table
 
-All routes are defined exclusively in `App.tsx` using `HashRouter`.
+All routes are defined exclusively in `App.tsx`.
 
-| Path | Component | Auth |
+| Path | Page Component | Notes |
 |---|---|---|
-| `/login` | `Login` | Public |
-| `/signup` | `Signup` | Public |
-| `/reset-password` | `ResetPasswordPage` | Public |
-| `/privacy-policy` | `PrivacyPolicy` | Public |
-| `/` | `Dashboard` | Protected |
-| `/workflows` | `Workflows` | Protected |
-| `/workflows/manage` | `CustomWorkflows` | Protected |
-| `/workflows/:id` | `WorkflowDetail` | Protected |
-| `/documents` | `Documents` | Protected |
-| `/documents/manage` | `CustomDocumentTemplates` | Protected |
-| `/documents/:id` | `DocumentGenerator` | Protected |
-| `/inbox` | `DocumentInbox` | Protected |
-| `/vault` | `Vault` | Protected |
-| `/profile` | `CompanyProfile` | Protected |
-| `/mca-mocks` | `McaMocksIndex` | Protected |
-| `/mca-mocks/aoc-4` | `AOC4Mock` | Protected |
-| `/mca-mocks/mgt-7` | `MGT7Mock` | Protected |
-| `/mca-mocks/mgt-15` | `MGT15Mock` | Protected |
+| `/` | `Home` | Landing / hero page |
+| `/courses` | `Catalog` | Filterable course listing |
+| `/courses/:id` | `CourseDetail` | Accepts `slug` or `id` |
+| `/about` | `About` | |
+| `/training-plan` | `TrainingPlan` | |
+| `/verify` | `Verify` | Certificate verification |
+| `/contact` | `Contact` | Contact form |
+| `/privacy` | `Privacy` | |
+| `/terms` | `Terms` | |
+| `/cookies` | `Cookies` | |
 
-## Auth
+## API Layer (`src/api.ts`)
 
-- Auth state is managed in `App.tsx` via `supabase.auth.getSession()` and `onAuthStateChange`.
-- `AuthGuard` wraps all protected routes inside a `<Layout />` outlet. Unauthenticated users are redirected to `/login`.
-- The Supabase client singleton lives in `src/lib/supabase.ts`. Never instantiate a new client inline.
-- On auth state changes, the app broadcasts a `GOVNIX_AUTH_SYNC` message via `window.postMessage` — this syncs the session with the `perfxcel-mca-extension` Chrome extension. Do not remove this broadcast.
-- Sentry user context is set/cleared on every auth state change via `Sentry.setUser(...)`.
+- A single `axios` instance (`api`) is created with base URL from `VITE_API_URL` (default: `https://api-dev.perfxcel.com/api/v1`).
+- All HTTP calls are exported functions from `src/api.ts` (`getCourses`, `getCourse`, `getTaxonomies`, `submitCourseInterest`, `verifyCertificate`, `submitContact`).
+- Never call `axios` directly in components or hooks — always use the exported functions from `src/api.ts`.
+- Forms that submit user data (`submitCourseInterest`, `submitContact`) require a Cloudflare Turnstile token passed as `turnstileToken`.
 
-## API Calls
+## Data & Hooks
 
-- All HTTP requests go through the `api` Axios instance from `src/lib/api.ts`. Never call `axios` directly in components or hooks.
-- The `api` instance base URL is `VITE_GOVNIX_API_URL` (default: `https://api.perfxcel.net`).
-- A request interceptor automatically attaches `Authorization: Bearer <token>` from the active Supabase session and adds a Sentry breadcrumb.
-- A response interceptor extracts `x-correlation-id` from response headers and tags it in Sentry.
-- Data-fetching and business logic belong in domain-scoped hooks in `src/hooks/`. Components call hooks — never call `api` directly from a component or page.
+- `useCourses(filters: CourseFilters)` — fetches and filters the course list; returns `{ courses, loading, error }`.
+- `useTaxonomies()` — fetches taxonomy collections (categories, cities, associations, delivery modes); powers Navbar mega-menu and catalog filters.
+- All data-fetching belongs in `src/hooks/`. Page and component files call hooks, not `api` functions directly.
 
-## Key Conventions for AI Assistants
+## Key Conventions
 
-- **All routes in `App.tsx` only.** Never define routes inside page or component files.
-- **Public routes** (`/login`, `/signup`, `/reset-password`, `/privacy-policy`) sit outside `AuthGuard`. All other routes are wrapped in `AuthGuard → Layout`.
-- **Never bypass `AuthGuard`** for protected routes.
-- **Never call `axios` directly** — always use the `api` instance from `src/lib/api.ts`.
-- **Never instantiate Supabase inline** — use the singleton from `src/lib/supabase.ts`.
-- **Components stay thin** — delegate data-fetching and business logic to hooks in `src/hooks/`.
-- **Error handling via `@dotevolve/error-utils`** — never configure Sentry directly.
-- **Styling via Tailwind CSS 4.x** — no `tailwind.config.js`. Apply utility classes directly in JSX; never use inline `style` props for layout.
-- **TypeScript strict mode** — no `any` without an explicit justification comment. Shared types live in `src/types/`.
-- **Tests in `src/__tests__/`** — use Vitest with `@testing-library/react`. Property-based tests use `fast-check` and the `.property.test.tsx` suffix.
+- **Routes in `App.tsx` only.** Never define `<Route>` elements inside page or component files.
+- **No auth layer.** There is no `AuthGuard`, no Supabase session, and no protected routes. Do not introduce authentication without explicit instruction.
+- **Components stay thin.** Data-fetching and side-effects live in hooks; pages and components consume hook return values.
+- **Tailwind 4 utility-first styling.** No `tailwind.config.js`. Apply utility classes directly in JSX. Never use inline `style` props for layout (exception: custom font-family declarations where no utility class exists).
+- **TypeScript strict mode.** No `any` without an explicit justification comment. All shared domain types live in `src/types/`.
+- **Course navigation** uses `course.slug` when present, falling back to `course.id` (`/courses/${course.slug || course.id}`).
+- **`is_published && status === 'active'`** — only show courses matching both conditions (applied in `getCourses`).
+- **Sentry** is configured via the Vite plugin; do not call `Sentry.*` directly in application code — use `@dotevolve/error-utils`.
+- **Tests** live in `src/__tests__/`. Property-based tests use `fast-check` with a `.property.test.tsx` suffix.
+
+## Environment Variables
+
+| Variable | Purpose |
+|---|---|
+| `VITE_API_URL` | Backend API base URL |
+| `VITE_APP_ENV` | Runtime environment (`prod` / `dev`) |
+| `SENTRY_ORG`, `SENTRY_PROJECT`, `SENTRY_AUTH_TOKEN` | Sentry source-map upload (build-time only) |
 
 ## Deployment
 
-- Frontend: Cloudflare Pages
-- Backend proxy: OCI (via `server.js` Express proxy)
-- API Gateway: `VITE_GOVNIX_API_URL` → `https://api.perfxcel.net`
+- Hosted on **Cloudflare Pages**.
+- `npm run build` → `tsc -b && vite build` (source maps enabled for Sentry).
+- `server.js` is an Express proxy used in the OCI deployment context; it is not the Vite dev server.

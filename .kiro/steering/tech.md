@@ -12,15 +12,15 @@ inclusion: always
 | Framework | React | 19.x |
 | Build Tool | Vite | 8.x |
 | Styling | Tailwind CSS (via `@tailwindcss/vite`) | 4.x |
-| Routing | React Router DOM (`HashRouter`) | 7.x |
-| HTTP Client | Axios | — |
-| Auth | @supabase/supabase-js | — |
+| Routing | React Router DOM (`BrowserRouter`) | 7.x |
+| HTTP Client | Axios | 1.x |
+| Bot Protection | @marsidev/react-turnstile | — |
 | PDF Generation | @react-pdf/renderer | — |
 | PDF Viewing | react-pdf | — |
 | Image Processing | jimp | — |
 | Drag & Drop | @dnd-kit/core, @dnd-kit/sortable | — |
 | Icons | Lucide React | — |
-| Error Tracking | Sentry + @dotevolve/error-utils | — |
+| Error Tracking | @dotevolve/error-utils + @sentry/vite-plugin | — |
 | UI Kit | @dotevolve/ui-kit | ^1.0.0 |
 
 ## Testing
@@ -28,6 +28,7 @@ inclusion: always
 | Concern | Library | Version |
 |---|---|---|
 | Runner | Vitest | 4.x |
+| Environment | jsdom | — |
 | Component Testing | @testing-library/react | — |
 | Property-Based | fast-check | — |
 
@@ -39,7 +40,7 @@ inclusion: always
 ```bash
 npm run dev            # Start Vite dev server
 npm run build          # TypeScript check + Vite production build
-npm test               # Run tests (single pass)
+npm test               # Run tests (single pass, --passWithNoTests)
 npm run test:coverage  # Tests with coverage
 npm run lint           # ESLint
 ```
@@ -48,48 +49,60 @@ npm run lint           # ESLint
 
 | Variable | Description |
 |---|---|
+| `VITE_API_URL` | API base URL (default: `https://api-dev.perfxcel.com/api/v1`) |
 | `VITE_SUPABASE_URL` | Supabase project URL |
 | `VITE_SUPABASE_ANON_KEY` | Supabase anon key |
-| `VITE_API_GATEWAY_URL` | API Gateway base URL (default: `https://api.perfxcel.net`) |
+
+## Project Structure
+
+```
+src/
+├── api.ts              # Axios instance + all API functions
+├── App.tsx             # Route definitions (BrowserRouter via main.tsx)
+├── main.tsx            # Entry point; wraps app in BrowserRouter
+├── index.css           # Global styles + UI Kit imports
+├── components/         # Shared UI components (Navbar, Footer, CourseCard, etc.)
+├── hooks/              # Domain-scoped data-fetching hooks (useCourses, useTaxonomies)
+├── pages/              # One file per route (thin — delegate to hooks and components)
+├── types/              # Shared TypeScript types (course.ts, index.ts)
+└── __tests__/          # Vitest tests
+```
 
 ## Key Coding Conventions
 
 ### TypeScript
 - Strict mode is enabled. All code must type-check cleanly. No `any` without an explicit justification comment.
-- Shared types live in `src/types/`. Use `interface` for object shapes.
+- Shared types live in `src/types/`. Use `interface` for object shapes and `type` for unions/aliases.
 
 ### Styling
 - Tailwind CSS v4 is loaded as a Vite plugin (`@tailwindcss/vite`). **There is no `tailwind.config.js`.**
-- Apply utility classes directly in JSX. Never use inline `style` props for layout.
+- Apply utility classes directly in JSX. Do not use inline `style` props for layout or spacing.
 
 ### UI Kit
-- **Use `@dotevolve/ui-kit`** for all standard UI components (e.g. `Alert`, `Modal`, `Table`, `Badge`, `Toggle`).
-- Do not create custom shells for these elements.
+- Use `@dotevolve/ui-kit` for all standard UI components (e.g. `Alert`, `Modal`, `Table`, `Badge`, `Toggle`).
+- Do not re-implement components that already exist in the UI Kit.
 - The UI Kit styles are imported in `src/index.css`.
 
 ### API Calls
-- **Never call `axios` directly** in components or hooks.
-- All HTTP requests go through the `api` Axios instance from `src/lib/api.ts`.
-  - Attaches `Authorization: Bearer <token>` from the active Supabase session via a request interceptor.
-  - Extracts `x-correlation-id` from response headers and tags it in Sentry via a response interceptor.
-  - Base URL: `VITE_API_GATEWAY_URL` (default: `https://api.perfxcel.net`).
-- **Never instantiate Supabase inline** — use the singleton from `src/lib/supabase.ts`.
+- All HTTP functions live in `src/api.ts`. The `api` Axios instance is created there with `VITE_API_URL` as the base URL.
+- **Never instantiate Axios directly in components or hooks.** Import named functions from `src/api.ts` instead (e.g. `getCourses`, `getCourse`, `getTaxonomies`).
+- Forms that require bot protection must pass a Cloudflare Turnstile token as `turnstileToken` in the request body (see `submitCourseInterest`, `verifyCertificate`, `submitContact`).
 
 ### Data Fetching
-- All data-fetching and business logic belong in domain-scoped hooks in `src/hooks/` (e.g. `useWorkflows`, `useDocuments`).
-- Components call hooks — never call `api` directly from a component or page.
+- All data-fetching and async state logic belong in domain-scoped hooks in `src/hooks/` (e.g. `useCourses`, `useTaxonomies`).
+- Hooks call functions from `src/api.ts` — never call `api` directly from a component or page.
+- Components and pages call hooks to get data; they do not call API functions directly.
 
-### Auth & Routing
-- Uses `HashRouter` — all routes are hash-based. All route definitions live exclusively in `App.tsx`.
-- Public routes (`/login`, `/signup`, `/reset-password`, `/privacy-policy`) sit outside `AuthGuard`. All protected routes are wrapped in `AuthGuard → Layout`. Never bypass `AuthGuard`.
-- Auth state is managed in `App.tsx` via `supabase.auth.getSession()` and `onAuthStateChange`.
-- On every auth state change, the app broadcasts a `GOVNIX_AUTH_SYNC` message via `window.postMessage` to sync with the `perfxcel-mca-extension`. **Do not remove this broadcast.**
-
-### Error Tracking
-- Sentry is configured via `@dotevolve/error-utils`. Never configure Sentry directly.
-- Sentry user context is set/cleared on every auth state change in `App.tsx`.
+### Routing
+- Uses `BrowserRouter` (standard history-based routing). All route definitions live exclusively in `App.tsx`.
+- This is a public-facing app with no authentication guards. All routes are publicly accessible.
+- `App.tsx` composes `<Navbar />`, `<Routes>`, and `<Footer />` — keep this shell thin.
 
 ### Pages and Components
 - Pages map 1:1 to routes and must stay thin — delegate data-fetching to hooks and rendering to components.
+- Components live in `src/components/`. Keep them focused and reusable.
 - Never put API calls or business logic directly in page or component files.
-- Components are grouped by domain under `src/components/` (e.g. `components/templates/`).
+
+### Error Tracking
+- Sentry is configured via `@dotevolve/error-utils` and source maps are uploaded via `@sentry/vite-plugin` in `vite.config.ts`.
+- Never configure Sentry directly — always go through `@dotevolve/error-utils`.
