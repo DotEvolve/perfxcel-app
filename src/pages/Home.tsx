@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 import { useTaxonomies } from "../hooks/useTaxonomies";
+import { useCourses } from "../hooks/useCourses";
+import CourseCard from "../components/CourseCard";
 import {
   Award,
   Users,
@@ -10,6 +12,7 @@ import {
   LineChart,
   Star,
   StarHalf,
+  ArrowRight,
 } from "lucide-react";
 import type { TaxonomyItem } from "../types/course";
 
@@ -25,6 +28,9 @@ const getCategoryIcon = (name: string) => {
 export default function Home() {
   const { taxonomies } = useTaxonomies();
   const categories = taxonomies?.categories || [];
+
+  // Fetch up to 6 public courses for the featured section
+  const { courses: featuredCourses, loading: featuredLoading } = useCourses({});
 
   return (
     <div>
@@ -78,6 +84,44 @@ export default function Home() {
                 Loading categories...
               </div>
             )}
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Courses Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-end justify-between mb-12">
+            <SectionHeading eyebrow="Popular Programmes" title="Featured Courses" />
+            <Link
+              to="/courses"
+              className="hidden md:flex items-center gap-2 text-primary-600 font-bold hover:text-primary-700 transition-colors text-sm"
+            >
+              View all courses <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+
+          {featuredLoading ? (
+            <div className="flex justify-center py-16">
+              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary-600" />
+            </div>
+          ) : featuredCourses.length === 0 ? (
+            <p className="text-center text-secondary-500 py-10">No featured courses available right now.</p>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {featuredCourses.slice(0, 6).map((course) => (
+                <CourseCard key={course.id} course={course} />
+              ))}
+            </div>
+          )}
+
+          <div className="mt-10 text-center md:hidden">
+            <Link
+              to="/courses"
+              className="inline-flex items-center gap-2 text-primary-600 font-bold hover:text-primary-700 transition-colors"
+            >
+              View all courses <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
         </div>
       </section>

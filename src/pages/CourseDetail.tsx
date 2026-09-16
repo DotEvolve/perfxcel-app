@@ -52,6 +52,17 @@ export default function CourseDetail() {
 
   return (
     <div className="pb-24 pt-0">
+      {/* Course Hero Image */}
+      {course.image_url && (
+        <div className="w-full h-64 md:h-80 overflow-hidden bg-secondary-200">
+          <img
+            src={course.image_url}
+            alt={course.title}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      )}
+
       {/* Breadcrumb Area */}
       <div className="bg-secondary-50 border-b border-gray-200 py-4 mb-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
