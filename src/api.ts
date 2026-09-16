@@ -20,8 +20,10 @@ export const getCourses = async (
   if (filters.association_id) params.append("association_id", filters.association_id);
   if (filters.delivery_mode_id) params.append("delivery_mode_id", filters.delivery_mode_id);
 
+  params.append("is_public", "true");
+
   const response = await api.get(`/courses?${params.toString()}`);
-  return response.data.data.filter((c: Course) => c.is_published);
+  return response.data.data.filter((c: Course) => c.is_published && (!c.status || c.status === 'active'));
 };
 
 export const getCourse = async (id: string): Promise<Course> => {

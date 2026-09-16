@@ -36,6 +36,10 @@ export interface Course {
   delivery_modes?: TaxonomyItem[];
   course_schedules?: CourseSchedule[];
   is_blended?: boolean;
+  status?: 'active' | 'archived' | 'deleted';
+  is_public?: boolean;
+  image_url?: string | null;
+  short_code?: string;
 }
 
 export interface CourseFilters {
