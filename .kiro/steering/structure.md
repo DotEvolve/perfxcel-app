@@ -88,14 +88,14 @@ Sentry is integrated exclusively via `@dotevolve/error-utils`. **Never configure
 
 ### Environment variables
 
-| Variable | Where used | Purpose |
-|---|---|---|
-| `VITE_SENTRY_DSN` | `src/config/sentry.ts` | Runtime DSN — required for Sentry to activate |
-| `VITE_SENTRY_ENVIRONMENT` | `src/config/sentry.ts` | Deployment environment tag (falls back to `import.meta.env.MODE`) |
-| `VITE_APP_VERSION` | `src/config/sentry.ts` | Release identifier for source map association |
-| `SENTRY_ORG` | `vite.config.ts` | Sentry org slug — build-time only |
-| `SENTRY_PROJECT` | `vite.config.ts` | Sentry project slug — build-time only |
-| `SENTRY_AUTH_TOKEN` | `vite.config.ts` | Source map upload token — build-time only (CI) |
+| Variable | Where used | Required | Purpose |
+|---|---|---|---|
+| `VITE_SENTRY_DSN` | `src/config/sentry.ts` | Yes | Runtime DSN — Sentry is a no-op without this |
+| `SENTRY_ORG` | `vite.config.ts` | CI only | Sentry org slug for source map upload |
+| `SENTRY_PROJECT` | `vite.config.ts` | CI only | Sentry project slug for source map upload |
+| `SENTRY_AUTH_TOKEN` | `vite.config.ts` | CI only | Source map upload token |
+
+`environment` falls back to Vite's `MODE` (`development`/`production`) — no extra variable needed. `release` is omitted unless `VITE_APP_VERSION` is explicitly set.
 
 ## Styling
 

@@ -1,5 +1,6 @@
 /// <reference types="vite/client" />
 import axios from "axios";
+import { Sentry } from "@dotevolve/error-utils/react";
 import type { Course, TaxonomyItem, CourseFilters } from "./types/course";
 
 export type { Course, TaxonomyItem };
@@ -10,6 +11,46 @@ const API_BASE_URL =
 export const api = axios.create({
   baseURL: API_BASE_URL,
 });
+
+// Tag every Sentry scope with the correlation ID returned by the API so
+// errors can be cross-referenced with server-side traces.
+api.interceptors.response.use(
+  (response) => {
+    const correlationId = response.headers["x-correlation-id"];
+    if (correlationId) {
+      Sentry.getCurrentScope().setTag("correlation_id", correlationId);
+    }
+    return response;
+  },
+  (error) => {
+    const status: number | undefined = error.response?.status;
+    const url: string = error.config?.url ?? "unknown";
+    const method: string = (error.config?.method ?? "unknown").toUpperCase();
+    const correlationId: string | undefined =
+      error.response?.headers?.["x-correlation-id"];
+
+    Sentry.withScope((scope) => {
+      scope.setTag("api.url", url);
+      scope.setTag("api.method", method);
+      if (status) scope.setTag("api.status_code", String(status));
+      if (correlationId) scope.setTag("correlation_id", correlationId);
+      scope.setContext("api_error", {
+        url,
+        method,
+        status,
+        correlationId,
+        baseURL: API_BASE_URL,
+      });
+      // Only capture server errors and unexpected failures — skip 4xx client
+      // errors (validation, auth) as they are expected and not actionable.
+      if (!status || status >= 500) {
+        Sentry.captureException(error);
+      }
+    });
+
+    return Promise.reject(error);
+  },
+);
 
 export const getCourses = async (
   filters: CourseFilters = {},
