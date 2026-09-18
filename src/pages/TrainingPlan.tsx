@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { requestTrainingPlan } from "../api";
-import { AppError } from "@dotevolve/error-utils";
+import { AppError } from "@dotevolve/error-utils/react";
 
 export default function TrainingPlan() {
   const [formData, setFormData] = useState({
