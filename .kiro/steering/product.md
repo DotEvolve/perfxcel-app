@@ -8,17 +8,17 @@ Public-facing marketing and course catalog SPA for PerfXcel (Performance Excelle
 
 ## Tech Stack
 
-| Concern | Library |
-|---|---|
-| Framework | React 19 + Vite 8 |
-| Language | TypeScript 5.9 (strict mode) |
-| Routing | React Router v7 (`BrowserRouter` in `main.tsx`) |
-| Styling | Tailwind CSS 4.x (no `tailwind.config.js`) |
-| HTTP | Axios via `src/api.ts` |
-| Bot protection | Cloudflare Turnstile (`@marsidev/react-turnstile`) |
+| Concern          | Library                                                       |
+| ---------------- | ------------------------------------------------------------- |
+| Framework        | React 19 + Vite 8                                             |
+| Language         | TypeScript 5.9 (strict mode)                                  |
+| Routing          | React Router v7 (`BrowserRouter` in `main.tsx`)               |
+| Styling          | Tailwind CSS 4.x (no `tailwind.config.js`)                    |
+| HTTP             | Axios via `src/api.ts`                                        |
+| Bot protection   | Cloudflare Turnstile (`@marsidev/react-turnstile`)            |
 | Error monitoring | Sentry (via `@sentry/vite-plugin` + `@dotevolve/error-utils`) |
-| Icons | `lucide-react` |
-| Testing | Vitest 4 + jsdom + `@testing-library/react` + `fast-check` |
+| Icons            | `lucide-react`                                                |
+| Testing          | Vitest 4 + jsdom + `@testing-library/react` + `fast-check`    |
 
 ## Project Structure
 
@@ -39,18 +39,18 @@ src/
 
 All routes are defined exclusively in `App.tsx`.
 
-| Path | Page Component | Notes |
-|---|---|---|
-| `/` | `Home` | Landing / hero page |
-| `/courses` | `Catalog` | Filterable course listing |
-| `/courses/:id` | `CourseDetail` | Accepts `slug` or `id` |
-| `/about` | `About` | |
-| `/training-plan` | `TrainingPlan` | |
-| `/verify` | `Verify` | Certificate verification |
-| `/contact` | `Contact` | Contact form |
-| `/privacy` | `Privacy` | |
-| `/terms` | `Terms` | |
-| `/cookies` | `Cookies` | |
+| Path             | Page Component | Notes                     |
+| ---------------- | -------------- | ------------------------- |
+| `/`              | `Home`         | Landing / hero page       |
+| `/courses`       | `Catalog`      | Filterable course listing |
+| `/courses/:id`   | `CourseDetail` | Accepts `slug` or `id`    |
+| `/about`         | `About`        |                           |
+| `/training-plan` | `TrainingPlan` |                           |
+| `/verify`        | `Verify`       | Certificate verification  |
+| `/contact`       | `Contact`      | Contact form              |
+| `/privacy`       | `Privacy`      |                           |
+| `/terms`         | `Terms`        |                           |
+| `/cookies`       | `Cookies`      |                           |
 
 ## API Layer (`src/api.ts`)
 
@@ -79,10 +79,10 @@ All routes are defined exclusively in `App.tsx`.
 
 ## Environment Variables
 
-| Variable | Purpose |
-|---|---|
-| `VITE_API_URL` | Backend API base URL |
-| `VITE_APP_ENV` | Runtime environment (`prod` / `dev`) |
+| Variable                                            | Purpose                                    |
+| --------------------------------------------------- | ------------------------------------------ |
+| `VITE_API_URL`                                      | Backend API base URL                       |
+| `VITE_APP_ENV`                                      | Runtime environment (`prod` / `dev`)       |
 | `SENTRY_ORG`, `SENTRY_PROJECT`, `SENTRY_AUTH_TOKEN` | Sentry source-map upload (build-time only) |
 
 ## Deployment

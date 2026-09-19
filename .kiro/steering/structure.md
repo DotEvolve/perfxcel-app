@@ -68,15 +68,15 @@ Sentry is integrated exclusively via `@dotevolve/error-utils`. **Never configure
 
 ### Features enabled
 
-| Feature | Detail |
-|---|---|
-| Error tracking | All unhandled exceptions via `Sentry.ErrorBoundary` in `App.tsx` |
-| Browser tracing | Page loads, navigation, HTTP requests (100% sample rate) |
-| Browser profiling | JS execution profiles (100% sample rate) |
-| Session replay | 10% of sessions; 100% of sessions containing an error |
-| Console log capture | `log`, `warn`, `error` forwarded to Sentry Logs |
-| API error capture | 5xx responses captured in `src/api.ts` interceptor with request tags |
-| Correlation ID | `x-correlation-id` from API responses tagged on the Sentry scope |
+| Feature             | Detail                                                               |
+| ------------------- | -------------------------------------------------------------------- |
+| Error tracking      | All unhandled exceptions via `Sentry.ErrorBoundary` in `App.tsx`     |
+| Browser tracing     | Page loads, navigation, HTTP requests (100% sample rate)             |
+| Browser profiling   | JS execution profiles (100% sample rate)                             |
+| Session replay      | 10% of sessions; 100% of sessions containing an error                |
+| Console log capture | `log`, `warn`, `error` forwarded to Sentry Logs                      |
+| API error capture   | 5xx responses captured in `src/api.ts` interceptor with request tags |
+| Correlation ID      | `x-correlation-id` from API responses tagged on the Sentry scope     |
 
 ### Error boundary
 
@@ -88,12 +88,12 @@ Sentry is integrated exclusively via `@dotevolve/error-utils`. **Never configure
 
 ### Environment variables
 
-| Variable | Where used | Required | Purpose |
-|---|---|---|---|
-| `VITE_SENTRY_DSN` | `src/config/sentry.ts` | Yes | Runtime DSN — Sentry is a no-op without this |
-| `SENTRY_ORG` | `vite.config.ts` | CI only | Sentry org slug for source map upload |
-| `SENTRY_PROJECT` | `vite.config.ts` | CI only | Sentry project slug for source map upload |
-| `SENTRY_AUTH_TOKEN` | `vite.config.ts` | CI only | Source map upload token |
+| Variable            | Where used             | Required | Purpose                                      |
+| ------------------- | ---------------------- | -------- | -------------------------------------------- |
+| `VITE_SENTRY_DSN`   | `src/config/sentry.ts` | Yes      | Runtime DSN — Sentry is a no-op without this |
+| `SENTRY_ORG`        | `vite.config.ts`       | CI only  | Sentry org slug for source map upload        |
+| `SENTRY_PROJECT`    | `vite.config.ts`       | CI only  | Sentry project slug for source map upload    |
+| `SENTRY_AUTH_TOKEN` | `vite.config.ts`       | CI only  | Source map upload token                      |
 
 `environment` falls back to Vite's `MODE` (`development`/`production`) — no extra variable needed. `release` is omitted unless `VITE_APP_VERSION` is explicitly set.
 
@@ -117,14 +117,14 @@ Sentry is integrated exclusively via `@dotevolve/error-utils`. **Never configure
 
 ## Key Libraries
 
-| Concern | Library |
-|---|---|
-| Routing | react-router-dom v7 |
-| HTTP | axios |
-| Observability | @dotevolve/error-utils (Sentry) |
-| Styling | Tailwind CSS v4 |
-| Bot protection | @marsidev/react-turnstile |
-| PDF | @react-pdf/renderer, react-pdf |
-| Drag-and-drop | @dnd-kit/core, @dnd-kit/sortable |
-| Icons | lucide-react |
-| UI primitives | @dotevolve/ui-kit |
+| Concern        | Library                          |
+| -------------- | -------------------------------- |
+| Routing        | react-router-dom v7              |
+| HTTP           | axios                            |
+| Observability  | @dotevolve/error-utils (Sentry)  |
+| Styling        | Tailwind CSS v4                  |
+| Bot protection | @marsidev/react-turnstile        |
+| PDF            | @react-pdf/renderer, react-pdf   |
+| Drag-and-drop  | @dnd-kit/core, @dnd-kit/sortable |
+| Icons          | lucide-react                     |
+| UI primitives  | @dotevolve/ui-kit                |

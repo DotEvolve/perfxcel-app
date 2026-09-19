@@ -85,6 +85,7 @@ perfxcel-api/
 ### `src/controllers/enrollmentController.ts`
 
 #### `getEnrollments`
+
 ```
 GET /api/v1/enrollments
 → supabase.from("enrollments")
@@ -94,6 +95,7 @@ GET /api/v1/enrollments
 ```
 
 #### `createEnrollment`
+
 ```
 POST /api/v1/enrollments
 body: { interest_id }
@@ -106,6 +108,7 @@ body: { interest_id }
 ```
 
 #### `updateEnrollmentStatus`
+
 ```
 PATCH /api/v1/enrollments/:id
 body: { status }
@@ -120,15 +123,22 @@ body: { status }
 #### `generateAndIssueCertificate(enrollment, interest)` — private async helper
 
 ```typescript
-async function generateAndIssueCertificate(enrollment: Enrollment, interest: Interest) {
+async function generateAndIssueCertificate(
+  enrollment: Enrollment,
+  interest: Interest,
+) {
   // 1. Generate unique credential_id
   const credentialId = await generateUniqueCredentialId();
 
   // 2. Generate QR code as PNG buffer
-  const qrBuffer = await QRCode.toBuffer(`https://perfxcel.com/verify?id=${credentialId}`);
+  const qrBuffer = await QRCode.toBuffer(
+    `https://perfxcel.com/verify?id=${credentialId}`,
+  );
 
   // 3. Load certificate template + overlay dynamic content with pdf-lib
-  const templateBytes = fs.readFileSync(path.join(__dirname, "../../assets/certificate_template.png"));
+  const templateBytes = fs.readFileSync(
+    path.join(__dirname, "../../assets/certificate_template.png"),
+  );
   const pdfDoc = await PDFDocument.create();
   const page = pdfDoc.addPage([842, 595]); // A4 landscape
   const pngImage = await pdfDoc.embedPng(templateBytes);
@@ -141,20 +151,49 @@ async function generateAndIssueCertificate(enrollment: Enrollment, interest: Int
   // Overlay text (using standard Helvetica font)
   const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
   const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-  page.drawText(interest.name, { x: 421, y: 320, size: 28, font: boldFont, color: rgb(0.1, 0.1, 0.1) });
-  page.drawText(interest.courses.title, { x: 421, y: 270, size: 16, font, color: rgb(0.3, 0.3, 0.3) });
-  page.drawText(format(new Date(), "dd MMMM yyyy"), { x: 421, y: 230, size: 13, font });
-  page.drawText(`Credential ID: ${credentialId}`, { x: 421, y: 200, size: 11, font, color: rgb(0.4, 0.4, 0.4) });
+  page.drawText(interest.name, {
+    x: 421,
+    y: 320,
+    size: 28,
+    font: boldFont,
+    color: rgb(0.1, 0.1, 0.1),
+  });
+  page.drawText(interest.courses.title, {
+    x: 421,
+    y: 270,
+    size: 16,
+    font,
+    color: rgb(0.3, 0.3, 0.3),
+  });
+  page.drawText(format(new Date(), "dd MMMM yyyy"), {
+    x: 421,
+    y: 230,
+    size: 13,
+    font,
+  });
+  page.drawText(`Credential ID: ${credentialId}`, {
+    x: 421,
+    y: 200,
+    size: 11,
+    font,
+    color: rgb(0.4, 0.4, 0.4),
+  });
 
   const pdfBytes = await pdfDoc.save();
 
   // 4. Upload to Supabase Storage
   const { data: uploadData, error: uploadError } = await supabase.storage
     .from("certificates")
-    .upload(`${credentialId}.pdf`, Buffer.from(pdfBytes), { contentType: "application/pdf", upsert: false });
-  if (uploadError) throw new AppError(uploadError.message, 500, ErrorCategory.SYSTEM);
+    .upload(`${credentialId}.pdf`, Buffer.from(pdfBytes), {
+      contentType: "application/pdf",
+      upsert: false,
+    });
+  if (uploadError)
+    throw new AppError(uploadError.message, 500, ErrorCategory.SYSTEM);
 
-  const { data: { publicUrl } } = supabase.storage.from("certificates").getPublicUrl(`${credentialId}.pdf`);
+  const {
+    data: { publicUrl },
+  } = supabase.storage.from("certificates").getPublicUrl(`${credentialId}.pdf`);
 
   // 5. Insert certificate record
   const { error: certError } = await supabase.from("certificates").insert({
@@ -162,18 +201,27 @@ async function generateAndIssueCertificate(enrollment: Enrollment, interest: Int
     enrollment_id: enrollment.id,
     pdf_url: publicUrl,
   });
-  if (certError) throw new AppError(certError.message, 500, ErrorCategory.SYSTEM);
+  if (certError)
+    throw new AppError(certError.message, 500, ErrorCategory.SYSTEM);
 
   // 6. Send email
-  await sendCertificateEmail(interest.email, interest.name, publicUrl, Buffer.from(pdfBytes), credentialId);
+  await sendCertificateEmail(
+    interest.email,
+    interest.name,
+    publicUrl,
+    Buffer.from(pdfBytes),
+    credentialId,
+  );
 }
 ```
 
 #### `generateUniqueCredentialId()` — private helper
+
 - Generates 8-char random alphanumeric (uppercase + digits) string
 - Checks for collision in `perfxcel.certificates`; retries up to 5 times
 
 #### `sendCertificateEmail()` — private helper
+
 - Creates a `nodemailer` transporter using `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`
 - Sends to candidate with subject "Your Perfxcel Certificate is Ready"
 - HTML body with link to `pdf_url` and download button
@@ -184,6 +232,7 @@ async function generateAndIssueCertificate(enrollment: Enrollment, interest: Int
 ### `src/controllers/verifyController.ts`
 
 #### `verifyCertificate`
+
 ```
 POST /api/v1/verify
 body: { credential_id, turnstileToken }
@@ -202,6 +251,7 @@ body: { credential_id, turnstileToken }
 ### Route Files
 
 **`src/routes/enrollments.ts`**
+
 ```typescript
 router.get("/", asyncHandler(getEnrollments));
 router.post("/", asyncHandler(createEnrollment));
@@ -209,11 +259,13 @@ router.patch("/:id", asyncHandler(updateEnrollmentStatus));
 ```
 
 **`src/routes/verify.ts`**
+
 ```typescript
 router.post("/", asyncHandler(verifyCertificate));
 ```
 
 ### `src/app.ts` additions
+
 ```typescript
 import enrollmentRoutes from "./routes/enrollments";
 import verifyRoutes from "./routes/verify";
@@ -227,7 +279,9 @@ app.use("/api/v1/verify", verifyRoutes);
 ## Admin Portal Design (`perfxcel-admin`)
 
 ### New File
+
 **`src/pages/Enrollments.tsx`** — follows the `Interests.tsx` pattern exactly:
+
 - `useState<Enrollment[]>([])` (define an `Enrollment` interface locally)
 - `useEffect` → `getEnrollments()` on mount
 - Table columns: Candidate, Email, Course, Status, Created, Actions
@@ -238,19 +292,25 @@ app.use("/api/v1/verify", verifyRoutes);
 ### Modified Files
 
 **`src/api.ts`** — new functions:
+
 ```typescript
-export const getEnrollments = () => api.get("/enrollments").then(r => r.data.data);
+export const getEnrollments = () =>
+  api.get("/enrollments").then((r) => r.data.data);
 export const createEnrollment = (interestId: string) =>
-  api.post("/enrollments", { interest_id: interestId }).then(r => r.data.data);
+  api
+    .post("/enrollments", { interest_id: interestId })
+    .then((r) => r.data.data);
 export const updateEnrollmentStatus = (id: string, status: string) =>
-  api.patch(`/enrollments/${id}`, { status }).then(r => r.data.data);
+  api.patch(`/enrollments/${id}`, { status }).then((r) => r.data.data);
 ```
 
 **`src/pages/Interests.tsx`** — add "Convert to Enrollment" column:
+
 - New button in each row, only rendered when `interest.status === 'enrolled'`
 - On click: calls `createEnrollment(interest.id)`, shows success/error inline
 
 **`src/App.tsx`** changes:
+
 - Import `Enrollments` from `"./pages/Enrollments"`
 - Add sidebar link: `<Link to="/enrollments">Enrollments</Link>`
 - Add route: `<Route path="/enrollments" element={<Enrollments />} />`
@@ -260,9 +320,11 @@ export const updateEnrollmentStatus = (id: string, status: string) =>
 ## Public Website Design (`perfxcel-app`)
 
 ### New File
+
 **`src/pages/Verify.tsx`**
 
 State:
+
 ```typescript
 const [credentialId, setCredentialId] = useState(searchParams.get("id") ?? "");
 const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
@@ -272,6 +334,7 @@ const [error, setError] = useState<string | null>(null);
 ```
 
 UI structure:
+
 ```
 <section> verification form
   <input> credential ID (value from URL ?id= if present)
@@ -288,12 +351,19 @@ UI structure:
 ### Modified Files
 
 **`src/api.ts`** — new function:
+
 ```typescript
-export const verifyCertificate = (credentialId: string, turnstileToken: string) =>
-  api.post("/verify", { credential_id: credentialId, turnstileToken }).then(r => r.data.data);
+export const verifyCertificate = (
+  credentialId: string,
+  turnstileToken: string,
+) =>
+  api
+    .post("/verify", { credential_id: credentialId, turnstileToken })
+    .then((r) => r.data.data);
 ```
 
 **`src/App.tsx`**:
+
 ```typescript
 import Verify from "./pages/Verify";
 // ...
@@ -301,8 +371,11 @@ import Verify from "./pages/Verify";
 ```
 
 **`src/components/Footer.tsx`** — add under Quick Links:
+
 ```tsx
-<Link to="/verify" className="...">Verify Certificate</Link>
+<Link to="/verify" className="...">
+  Verify Certificate
+</Link>
 ```
 
 ---
@@ -310,6 +383,7 @@ import Verify from "./pages/Verify";
 ## Environment Variables
 
 ### `perfxcel-api` additions
+
 ```
 SMTP_HOST=
 SMTP_PORT=587
@@ -319,6 +393,7 @@ SMTP_FROM=Perfxcel <no-reply@perfxcel.com>
 ```
 
 ### `perfxcel-app` additions (if not already present)
+
 ```
 VITE_TURNSTILE_SITE_KEY=  (the public site key for the verify page widget)
 ```
@@ -357,16 +432,16 @@ VITE_TURNSTILE_SITE_KEY=  (the public site key for the verify page widget)
 
 ## Error Handling
 
-| Scenario | HTTP Status | Error Class |
-|---|---|---|
-| Missing `interest_id` on create | 400 | `ValidationError` |
-| Interest not found | 404 | `NotFoundError` |
-| Duplicate enrollment | 409 | `ConflictError` |
-| Invalid enrollment status value | 400 | `ValidationError` |
-| Missing `turnstileToken` on verify | 400 | `ValidationError` |
-| Turnstile verification failed | 403 | `AppError` |
-| PDF generation failure | 500 | `AppError(ErrorCategory.SYSTEM)` |
-| Storage upload failure | 500 | `AppError(ErrorCategory.SYSTEM)` |
-| Email send failure | 500 | `AppError(ErrorCategory.SYSTEM)` |
+| Scenario                           | HTTP Status | Error Class                      |
+| ---------------------------------- | ----------- | -------------------------------- |
+| Missing `interest_id` on create    | 400         | `ValidationError`                |
+| Interest not found                 | 404         | `NotFoundError`                  |
+| Duplicate enrollment               | 409         | `ConflictError`                  |
+| Invalid enrollment status value    | 400         | `ValidationError`                |
+| Missing `turnstileToken` on verify | 400         | `ValidationError`                |
+| Turnstile verification failed      | 403         | `AppError`                       |
+| PDF generation failure             | 500         | `AppError(ErrorCategory.SYSTEM)` |
+| Storage upload failure             | 500         | `AppError(ErrorCategory.SYSTEM)` |
+| Email send failure                 | 500         | `AppError(ErrorCategory.SYSTEM)` |
 
 All errors are handled by the existing `errorHandlerMiddleware` — no manual `res.status().json()` calls.

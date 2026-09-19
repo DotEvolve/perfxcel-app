@@ -1,4 +1,10 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from "react";
 import { getTaxonomies } from "../api";
 
 export interface TaxonomyItem {
@@ -19,7 +25,9 @@ interface TaxonomyContextType {
   error: string | null;
 }
 
-const TaxonomyContext = createContext<TaxonomyContextType | undefined>(undefined);
+const TaxonomyContext = createContext<TaxonomyContextType | undefined>(
+  undefined,
+);
 
 export function TaxonomyProvider({ children }: { children: ReactNode }) {
   const [taxonomies, setTaxonomies] = useState<TaxonomyCollection | null>(null);
@@ -41,7 +49,9 @@ export function TaxonomyProvider({ children }: { children: ReactNode }) {
       }
     };
     fetchTaxonomies();
-    return () => { mounted = false; };
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   return (
@@ -54,7 +64,9 @@ export function TaxonomyProvider({ children }: { children: ReactNode }) {
 export function useTaxonomyContext() {
   const context = useContext(TaxonomyContext);
   if (context === undefined) {
-    throw new Error("useTaxonomyContext must be used within a TaxonomyProvider");
+    throw new Error(
+      "useTaxonomyContext must be used within a TaxonomyProvider",
+    );
   }
   return context;
 }

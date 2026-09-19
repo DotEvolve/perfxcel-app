@@ -19,6 +19,7 @@ The app remains fully public (no auth), built with React 19, Tailwind CSS v4, an
 **FR-1.3** The left side of the navbar must display the Perfxcel logo (`/logo.png`) and the "Perfxcel**LMS**" wordmark.
 
 **FR-1.4** The navbar must include the following top-level links:
+
 - **Home** — navigates to `/`
 - **Courses** — triggers the Mega Menu dropdown on hover/focus
 - **About** — navigates to `/about`
@@ -28,20 +29,22 @@ The app remains fully public (no auth), built with React 19, Tailwind CSS v4, an
 
 **FR-1.6** The Mega Menu must have a 4-column grid layout:
 
-| Column | Title | Data Source |
-|--------|-------|-------------|
-| 1 | By Category | `taxonomies.categories` (from `getTaxonomies()`) |
-| 2 | By Location | `taxonomies.cities` (from `getTaxonomies()`) |
-| 3 | By Association | `taxonomies.associations` (from `getTaxonomies()`) |
-| 4 | By Delivery Type | Static list (see FR-1.7) |
+| Column | Title            | Data Source                                        |
+| ------ | ---------------- | -------------------------------------------------- |
+| 1      | By Category      | `taxonomies.categories` (from `getTaxonomies()`)   |
+| 2      | By Location      | `taxonomies.cities` (from `getTaxonomies()`)       |
+| 3      | By Association   | `taxonomies.associations` (from `getTaxonomies()`) |
+| 4      | By Delivery Type | Static list (see FR-1.7)                           |
 
 **FR-1.7** The "By Delivery Type" column must contain these static items:
+
 1. Online (virtual, self-paced)
 2. In-Person Classroom
 3. Corporate / In-House
 4. Blended Learning
 
 **FR-1.8** Each item in the Mega Menu (dynamic or static) must be a `<Link>` that navigates to the Catalog page (`/`) with the appropriate query parameter pre-applied:
+
 - Category item → `/?category=<id>`
 - Location item → `/?location=<id>`
 - Association item → `/?association=<id>`
@@ -50,6 +53,7 @@ The app remains fully public (no auth), built with React 19, Tailwind CSS v4, an
 **FR-1.9** `Navbar` must call `getTaxonomies()` on mount. While loading, Mega Menu columns 1–3 show skeleton placeholders (3 lines each). On error, those columns show a short error state.
 
 **FR-1.10** The Mega Menu must close when the user:
+
 - Moves the mouse out of both the nav link and the dropdown panel
 - Presses the `Escape` key
 - Clicks any link inside the menu
@@ -61,6 +65,7 @@ The app remains fully public (no auth), built with React 19, Tailwind CSS v4, an
 ### FR-2 — Catalog Page Query-Parameter Filtering
 
 **FR-2.1** The `Catalog` component (currently inline in `App.tsx`, to be moved to `src/pages/Catalog.tsx`) must read URL query parameters on mount and use them to initialise filter state:
+
 - `?category=<id>` → sets `categoryFilter`
 - `?location=<id>` → sets `cityFilter`
 - `?association=<id>` → sets `associationFilter`
@@ -78,43 +83,49 @@ The app remains fully public (no auth), built with React 19, Tailwind CSS v4, an
 
 ### FR-3 — Homepage Sections
 
-The homepage (`/`) renders the `Catalog` component below the fold. A new marketing hero and supporting sections must be added **above** the catalog grid on the same route, or the homepage should become a distinct `HomePage` component that includes marketing sections followed by a featured course section. 
+The homepage (`/`) renders the `Catalog` component below the fold. A new marketing hero and supporting sections must be added **above** the catalog grid on the same route, or the homepage should become a distinct `HomePage` component that includes marketing sections followed by a featured course section.
 
 **Decision:** The homepage (`/`) will be a new `Home` page component (`src/pages/Home.tsx`). The Catalog will move to `/courses`. The homepage will feature marketing sections, with a "Browse All Courses" CTA linking to `/courses`.
 
-**FR-3.1 — Hero Section**  
+**FR-3.1 — Hero Section**
+
 - Full-width hero with a dark gradient overlay on a background image or abstract geometric SVG pattern.
-- Large headline: *"Elevate Your Professional Excellence"*
-- Subheading: *"Over 1,200+ accredited training programs across the MENA & EMEA region"*
+- Large headline: _"Elevate Your Professional Excellence"_
+- Subheading: _"Over 1,200+ accredited training programs across the MENA & EMEA region"_
 - Two CTAs: "Browse Courses →" (primary gradient button → `/courses`) and "About Us" (outlined → `/about`)
 - Animated stat counter row below CTAs: `1,200+` Programs | `50,000+` Professionals Trained | `30+` Countries | `200+` Expert Trainers
 
-**FR-3.2 — Featured Categories Section**  
+**FR-3.2 — Featured Categories Section**
+
 - Section heading: "Explore by Discipline"
 - Horizontal scrollable or 4-column grid of category cards, dynamically populated from `getTaxonomies().categories` (max 8).
 - Each card: icon (from a fixed icon map), category name, short description (placeholder text), and a link to `/courses?category=<id>`.
 
-**FR-3.3 — Why Perfxcel Section ("Our Promise")**  
+**FR-3.3 — Why Perfxcel Section ("Our Promise")**
+
 - 3-column card layout with icons:
   1. **Accredited Excellence** — Courses validated by globally recognised bodies
   2. **World-Class Instructors** — Faculty drawn from senior industry practitioners
   3. **Flexible Delivery** — Online, classroom, and corporate in-house options
 - Premium glass-panel cards with subtle gradient accent on hover.
 
-**FR-3.4 — Testimonials Section**  
+**FR-3.4 — Testimonials Section**
+
 - Section heading: "Trusted by Leading Organisations"
 - Horizontal scrollable carousel (or static 3-column grid) of 6 placeholder testimonials.
 - Each testimonial card: quote text, author name, company, and company logo placeholder (gradient initials badge).
 - 5-star rating display on each card.
 
-**FR-3.5 — Corporate Training CTA Band**  
+**FR-3.5 — Corporate Training CTA Band**
+
 - Full-width dark-background (secondary-900) band between sections.
-- Headline: *"Transform Your Team's Performance"*
-- Subheading: *"Bespoke corporate training programs designed for your organisation's unique challenges."*
+- Headline: _"Transform Your Team's Performance"_
+- Subheading: _"Bespoke corporate training programs designed for your organisation's unique challenges."_
 - CTA button: "Request a Proposal →" (opens the interest modal or navigates to a future `/contact` page).
 
 **FR-3.6 — Footer**  
 The existing minimal footer must be expanded into a 4-column footer:
+
 - Column 1: Logo + short brand description + social icons (LinkedIn, Twitter/X, YouTube)
 - Column 2: Quick Links (Home, Courses, About, Contact)
 - Column 3: Delivery Types (Online, In-Person, Corporate, Blended)
@@ -129,7 +140,7 @@ The existing minimal footer must be expanded into a 4-column footer:
 
 **FR-4.2** The About page must include the following sections, with high-quality placeholder content:
 
-- **Hero Banner** — Full-width heading banner: *"About Perfxcel"*, subheading copy about the organisation.
+- **Hero Banner** — Full-width heading banner: _"About Perfxcel"_, subheading copy about the organisation.
 - **Our Story** — Two-column layout: left is narrative copy (~3 paragraphs), right is a gradient accent visual / stats panel (Founded: 2008, Headquartered: Dubai, UAE, Training Days per Year: 3,000+).
 - **Mission & Vision** — Two-card layout: Mission card + Vision card with distinct icon accents.
 - **Our Numbers** — 4-stat counter grid (same style as hero stats).
@@ -144,10 +155,12 @@ The existing minimal footer must be expanded into a 4-column footer:
 **FR-5.1** The Catalog component must be moved to `src/pages/Catalog.tsx` and routed to `/courses`.
 
 **FR-5.2** The catalog hero area (currently just an `<h1>`) must be upgraded to include:
+
 - A full-width category banner / hero heading section
 - Active filter chips below the heading showing current filters with `×` remove buttons
 
 **FR-5.3** The course card must be upgraded to include:
+
 - A gradient top-accent bar in the card's primary color
 - Duration placeholder (e.g., "5 Days")
 - Delivery type badge (Online / Classroom)
@@ -164,6 +177,7 @@ The existing minimal footer must be expanded into a 4-column footer:
 **FR-6.2** The breadcrumb at the top must be a proper breadcrumb: `Home > Courses > [Course Title]`.
 
 **FR-6.3** A sidebar layout must be introduced for the detail page:
+
 - **Left (2/3 width):** Title, badges, description, objectives, target audience, and a placeholder "Schedule" table.
 - **Right (1/3 width):** A sticky "Enrol Now" card with price placeholder, delivery method, location, and the "Register Interest" button.
 

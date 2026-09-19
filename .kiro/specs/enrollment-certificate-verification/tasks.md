@@ -75,7 +75,7 @@
 
 - [ ] **Task 10**: Update `src/pages/Interests.tsx` with "Convert to Enrollment" action
   - Import `createEnrollment` from `"../api"`
-  - Add state: `const [converting, setConverting] = useState<string | null>(null)` and `const [convertError, setConvertError] = useState<Record<string, string>>({})` 
+  - Add state: `const [converting, setConverting] = useState<string | null>(null)` and `const [convertError, setConvertError] = useState<Record<string, string>>({})`
   - Add a `handleConvertToEnrollment(id: string)` function:
     - Sets `converting` to the interest ID, clears error
     - Calls `createEnrollment(id)`
@@ -109,9 +109,13 @@
 - [ ] **Task 13**: Update `src/api.ts` in perfxcel-app
   - Add `verifyCertificate(credentialId: string, turnstileToken: string)`:
     ```typescript
-    export const verifyCertificate = (credentialId: string, turnstileToken: string) =>
-      api.post("/verify", { credential_id: credentialId, turnstileToken })
-         .then(r => r.data.data);
+    export const verifyCertificate = (
+      credentialId: string,
+      turnstileToken: string,
+    ) =>
+      api
+        .post("/verify", { credential_id: credentialId, turnstileToken })
+        .then((r) => r.data.data);
     ```
   - **Acceptance**: TypeScript compiles; function exported
 

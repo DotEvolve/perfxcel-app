@@ -39,10 +39,14 @@ export default function Catalog() {
 
   const hasActiveFilters = category_id || city_id || association_id || delivery;
 
-  const getCategoryName = (id: string) => taxonomies?.categories.find(c => c.id === id)?.name;
-  const getLocationName = (id: string) => taxonomies?.cities.find(c => c.id === id)?.name;
-  const getAssociationName = (id: string) => taxonomies?.associations.find(c => c.id === id)?.name;
-  const getDeliveryName = (id: string) => taxonomies?.delivery_modes.find(c => c.id === id)?.name;
+  const getCategoryName = (id: string) =>
+    taxonomies?.categories.find((c) => c.id === id)?.name;
+  const getLocationName = (id: string) =>
+    taxonomies?.cities.find((c) => c.id === id)?.name;
+  const getAssociationName = (id: string) =>
+    taxonomies?.associations.find((c) => c.id === id)?.name;
+  const getDeliveryName = (id: string) =>
+    taxonomies?.delivery_modes.find((c) => c.id === id)?.name;
 
   return (
     <div className="pt-8">
@@ -51,13 +55,18 @@ export default function Catalog() {
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
         <div className="relative z-10 max-w-7xl mx-auto flex flex-col items-center text-center">
           <div className="flex items-center space-x-2 text-sm text-secondary-400 mb-4">
-            <Link to="/" className="hover:text-white transition-colors">Home</Link>
+            <Link to="/" className="hover:text-white transition-colors">
+              Home
+            </Link>
             <ChevronRight className="w-4 h-4" />
             <span className="text-white">Courses</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">All Training Courses</h1>
+          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
+            All Training Courses
+          </h1>
           <p className="text-secondary-300 text-lg max-w-2xl">
-            Explore our comprehensive catalog of accredited professional training programs designed to elevate your career.
+            Explore our comprehensive catalog of accredited professional
+            training programs designed to elevate your career.
           </p>
         </div>
       </div>
@@ -71,7 +80,7 @@ export default function Catalog() {
                 <Search className="w-5 h-5 mr-2 text-primary-500" /> Filters
               </h3>
               {hasActiveFilters && (
-                <button 
+                <button
                   onClick={clearAllFilters}
                   className="text-sm text-primary-600 hover:text-primary-700 font-medium"
                 >
@@ -161,38 +170,53 @@ export default function Catalog() {
 
         {/* Main Content Area */}
         <div className="flex-1">
-          
           {/* Active Filter Chips */}
           {hasActiveFilters && (
             <div className="flex flex-wrap gap-2 mb-6">
               {category_id && (
                 <div className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-primary-50 text-primary-700 border border-primary-100">
-                  <span className="font-semibold mr-1">Category:</span> {getCategoryName(category_id) || "Loading..."}
-                  <button onClick={() => updateFilter("category", "")} className="ml-2 hover:text-primary-900">
+                  <span className="font-semibold mr-1">Category:</span>{" "}
+                  {getCategoryName(category_id) || "Loading..."}
+                  <button
+                    onClick={() => updateFilter("category", "")}
+                    className="ml-2 hover:text-primary-900"
+                  >
                     <X className="w-3 h-3" />
                   </button>
                 </div>
               )}
               {city_id && (
                 <div className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-secondary-100 text-secondary-800 border border-gray-200">
-                  <span className="font-semibold mr-1">Location:</span> {getLocationName(city_id) || "Loading..."}
-                  <button onClick={() => updateFilter("location", "")} className="ml-2 hover:text-secondary-900">
+                  <span className="font-semibold mr-1">Location:</span>{" "}
+                  {getLocationName(city_id) || "Loading..."}
+                  <button
+                    onClick={() => updateFilter("location", "")}
+                    className="ml-2 hover:text-secondary-900"
+                  >
                     <X className="w-3 h-3" />
                   </button>
                 </div>
               )}
               {association_id && (
                 <div className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-50 text-blue-700 border border-blue-100">
-                  <span className="font-semibold mr-1">Assoc:</span> {getAssociationName(association_id) || "Loading..."}
-                  <button onClick={() => updateFilter("association", "")} className="ml-2 hover:text-blue-900">
+                  <span className="font-semibold mr-1">Assoc:</span>{" "}
+                  {getAssociationName(association_id) || "Loading..."}
+                  <button
+                    onClick={() => updateFilter("association", "")}
+                    className="ml-2 hover:text-blue-900"
+                  >
                     <X className="w-3 h-3" />
                   </button>
                 </div>
               )}
               {delivery && (
                 <div className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-accent-50 text-accent-700 border border-accent-100">
-                  <span className="font-semibold mr-1">Delivery:</span> {getDeliveryName(delivery) || "Loading..."}
-                  <button onClick={() => updateFilter("delivery", "")} className="ml-2 hover:text-accent-900">
+                  <span className="font-semibold mr-1">Delivery:</span>{" "}
+                  {getDeliveryName(delivery) || "Loading..."}
+                  <button
+                    onClick={() => updateFilter("delivery", "")}
+                    className="ml-2 hover:text-accent-900"
+                  >
                     <X className="w-3 h-3" />
                   </button>
                 </div>
@@ -203,10 +227,14 @@ export default function Catalog() {
           {/* Results Count Bar */}
           <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-200">
             <h2 className="text-xl font-bold text-secondary-900">
-              {coursesLoading ? "Searching..." : `${courses.length} courses found`}
+              {coursesLoading
+                ? "Searching..."
+                : `${courses.length} courses found`}
             </h2>
             <div className="flex items-center gap-2">
-              <span className="text-sm text-secondary-500 font-medium">Sort by:</span>
+              <span className="text-sm text-secondary-500 font-medium">
+                Sort by:
+              </span>
               <select className="bg-transparent text-sm font-bold text-secondary-900 focus:outline-none cursor-pointer">
                 <option>Recommended</option>
                 <option>Newest First</option>
@@ -223,11 +251,16 @@ export default function Catalog() {
           ) : courses.length === 0 ? (
             <div className="glass-panel text-center py-20 rounded-2xl border border-gray-100">
               <Search className="w-12 h-12 text-secondary-300 mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-secondary-900 mb-2">No courses found</h3>
+              <h3 className="text-xl font-bold text-secondary-900 mb-2">
+                No courses found
+              </h3>
               <p className="text-secondary-500">
                 Try adjusting your filters or search criteria.
               </p>
-              <button onClick={clearAllFilters} className="mt-6 text-primary-600 font-bold hover:text-primary-700">
+              <button
+                onClick={clearAllFilters}
+                className="mt-6 text-primary-600 font-bold hover:text-primary-700"
+              >
                 Clear all filters
               </button>
             </div>

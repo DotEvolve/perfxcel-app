@@ -43,13 +43,13 @@ The existing fuchsia primary palette is retained. New tokens are added for riche
 ```css
 @theme {
   /* Existing — unchanged */
-  --color-primary-50:  #fdf4ff;
+  --color-primary-50: #fdf4ff;
   --color-primary-100: #fae8ff;
   --color-primary-500: #d946ef;
   --color-primary-600: #c026d3;
   --color-primary-700: #a21caf;
 
-  --color-secondary-50:  #f8fafc;
+  --color-secondary-50: #f8fafc;
   --color-secondary-100: #f1f5f9;
   --color-secondary-800: #1e293b;
   --color-secondary-900: #0f172a;
@@ -69,13 +69,18 @@ The existing fuchsia primary palette is retained. New tokens are added for riche
 ### Typography
 
 **Load in `index.html`:**
+
 ```html
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
+  rel="stylesheet"
+/>
 ```
 
 **Scale:**
+
 - Hero headline: `text-5xl md:text-7xl font-extrabold` (Outfit 900)
 - Section heading: `text-3xl md:text-4xl font-bold` (Outfit 700)
 - Card title: `text-xl font-bold` (Outfit 700)
@@ -91,7 +96,9 @@ All animations are CSS transitions via Tailwind utilities. No JS animation libra
 .fade-in-up {
   opacity: 0;
   transform: translateY(12px);
-  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+  transition:
+    opacity 0.4s ease-out,
+    transform 0.4s ease-out;
 }
 .fade-in-up.visible {
   opacity: 1;
@@ -101,7 +108,9 @@ All animations are CSS transitions via Tailwind utilities. No JS animation libra
 .mega-menu-enter {
   opacity: 0;
   transform: translateY(-8px);
-  transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+  transition:
+    opacity 0.2s ease-out,
+    transform 0.2s ease-out;
 }
 .mega-menu-enter.open {
   opacity: 1;
@@ -116,6 +125,7 @@ All animations are CSS transitions via Tailwind utilities. No JS animation libra
 ### `Navbar.tsx`
 
 **Structure:**
+
 ```
 <nav> (glass-panel, sticky, z-50, h-20)
   <div> (max-w-7xl, mx-auto, flex, items-center, justify-between)
@@ -146,6 +156,7 @@ All animations are CSS transitions via Tailwind utilities. No JS animation libra
 ```
 
 **MegaMenu Panel:**
+
 - Positioned `absolute`, `top-full`, left-aligned to navbar container
 - Width: `max-w-5xl` or full container width, `shadow-2xl`, `rounded-2xl`, `glass-panel` background
 - 4-column CSS Grid (`grid-cols-4 gap-8`)
@@ -156,6 +167,7 @@ All animations are CSS transitions via Tailwind utilities. No JS animation libra
 - "View All Courses →" footer link spanning full width at bottom of panel
 
 **State management:**
+
 ```typescript
 const [isOpen, setIsOpen] = useState(false);
 const [taxonomies, setTaxonomies] = useState<TaxonomyCollection | null>(null);
@@ -163,8 +175,13 @@ const [taxonomiesLoading, setTaxonomiesLoading] = useState(true);
 const closeTimer = useRef<ReturnType<typeof setTimeout>>(null);
 
 // Hover delay: open immediately, close with 150ms delay to allow cursor movement
-const handleMouseEnter = () => { clearTimeout(closeTimer.current); setIsOpen(true); };
-const handleMouseLeave = () => { closeTimer.current = setTimeout(() => setIsOpen(false), 150); };
+const handleMouseEnter = () => {
+  clearTimeout(closeTimer.current);
+  setIsOpen(true);
+};
+const handleMouseLeave = () => {
+  closeTimer.current = setTimeout(() => setIsOpen(false), 150);
+};
 ```
 
 ---
@@ -179,7 +196,7 @@ const handleMouseLeave = () => { closeTimer.current = setTimeout(() => setIsOpen
   <div class="absolute inset-0 bg-gradient-to-br from-secondary-900 via-secondary-800 to-primary-900 opacity-95" />
   <!-- Abstract geometric decoration -->
   <div class="absolute inset-0 [background-image:radial-gradient(...)]" /> <!-- subtle dot pattern -->
-  
+
   <div class="relative z-10 max-w-7xl mx-auto px-4 text-white">
     <span class="badge"> ✦ 25+ Years of Professional Excellence </span>
     <h1 class="text-5xl md:text-7xl font-extrabold ...">
@@ -187,10 +204,10 @@ const handleMouseLeave = () => { closeTimer.current = setTimeout(() => setIsOpen
       <span class="text-primary-400">Professional</span> Excellence
     </h1>
     <p class="text-xl text-secondary-300 max-w-2xl mt-6">
-      Over 1,200+ accredited training programs across the MENA & EMEA region, 
+      Over 1,200+ accredited training programs across the MENA & EMEA region,
       delivered by world-class practitioners.
     </p>
-    
+
     <!-- CTAs -->
     <div class="flex gap-4 mt-10">
       <Link to="/courses" class="btn-primary-lg"> Browse Courses → </Link>
@@ -214,7 +231,7 @@ const handleMouseLeave = () => { closeTimer.current = setTimeout(() => setIsOpen
 <section class="py-20 bg-white">
   <div class="max-w-7xl mx-auto px-4">
     <SectionHeading eyebrow="Explore by Discipline" title="Find Your Next Certification" />
-    
+
     <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12">
       {categories.slice(0, 8).map(cat => <CategoryCard key={cat.id} category={cat} />)}
     </div>
@@ -223,6 +240,7 @@ const handleMouseLeave = () => { closeTimer.current = setTimeout(() => setIsOpen
 ```
 
 **CategoryCard:**
+
 - Square-ish card (`aspect-square md:aspect-auto p-8`)
 - Top: large colored icon (from a `CATEGORY_ICONS` map with `lucide-react` icons)
 - Category name (`text-lg font-bold`)
@@ -236,7 +254,7 @@ const handleMouseLeave = () => { closeTimer.current = setTimeout(() => setIsOpen
 <section class="py-20 bg-secondary-50">
   <div class="max-w-7xl mx-auto px-4">
     <SectionHeading eyebrow="Why Choose Us" title="Our Promise to You" />
-    
+
     <div class="grid md:grid-cols-3 gap-8 mt-12">
       <PromiseCard icon={Award} title="Accredited Excellence" ... />
       <PromiseCard icon={Users} title="World-Class Instructors" ... />
@@ -254,7 +272,7 @@ const handleMouseLeave = () => { closeTimer.current = setTimeout(() => setIsOpen
 <section class="py-20 bg-secondary-900 text-white overflow-hidden">
   <div class="max-w-7xl mx-auto px-4">
     <SectionHeading eyebrow="Client Stories" title="Trusted by Leading Organisations" light />
-    
+
     <!-- 3-col grid or scroll carousel -->
     <div class="grid md:grid-cols-3 gap-6 mt-12">
       {TESTIMONIALS.map(t => <TestimonialCard key={t.id} testimonial={t} />)}
@@ -326,21 +344,24 @@ const handleMouseLeave = () => { closeTimer.current = setTimeout(() => setIsOpen
 ### `Catalog.tsx` (moved from `App.tsx`, route: `/courses`)
 
 **URL-synced filter state:**
+
 ```typescript
 const [searchParams, setSearchParams] = useSearchParams();
-const categoryFilter    = searchParams.get("category")    ?? "";
-const cityFilter        = searchParams.get("location")    ?? "";
+const categoryFilter = searchParams.get("category") ?? "";
+const cityFilter = searchParams.get("location") ?? "";
 const associationFilter = searchParams.get("association") ?? "";
-const deliveryFilter    = searchParams.get("delivery")    ?? "";
+const deliveryFilter = searchParams.get("delivery") ?? "";
 
 const updateFilter = (key: string, value: string) => {
   const next = new URLSearchParams(searchParams);
-  if (value) next.set(key, value); else next.delete(key);
+  if (value) next.set(key, value);
+  else next.delete(key);
   setSearchParams(next, { replace: true });
 };
 ```
 
 **Layout:**
+
 - Catalog-specific hero band: dark bg, "All Training Courses" heading, breadcrumb `Home > Courses`
 - Active filter chips: horizontal row with `×` buttons to remove individual filters
 - Sidebar (300px) + main grid (flex-1)
@@ -358,23 +379,24 @@ interface CourseCardProps {
 ```
 
 **Visual design:**
+
 ```
 <div class="glass-panel rounded-2xl overflow-hidden hover-lift cursor-pointer flex flex-col">
   <!-- Gradient accent bar -->
   <div class="h-1.5 bg-gradient-to-r from-primary-500 to-primary-700" />
-  
+
   <div class="p-6 flex flex-col flex-1">
     <!-- Badges row -->
     <div class="flex flex-wrap gap-2 mb-3">
       {category badge} {association badge} {delivery badge}
     </div>
-    
+
     <!-- Title -->
     <h3 class="text-xl font-bold text-secondary-900 mb-2 leading-tight"> {title} </h3>
-    
+
     <!-- Description -->
     <p class="text-secondary-600 line-clamp-2 text-sm flex-1"> {description} </p>
-    
+
     <!-- Footer: location + duration + CTA -->
     <div class="mt-6 pt-4 border-t border-gray-100">
       <div class="flex items-center justify-between">
@@ -398,6 +420,7 @@ interface CourseCardProps {
 **Layout:** 2-column sidebar layout (`grid grid-cols-1 lg:grid-cols-3 gap-8`)
 
 **Left column (`lg:col-span-2`):**
+
 - Breadcrumb: `Home > Courses > [Title]`
 - Badges row (category, city, association)
 - Large title (`text-4xl font-extrabold`)
@@ -407,6 +430,7 @@ interface CourseCardProps {
 - Placeholder "Upcoming Schedules" table (3 rows of placeholder data)
 
 **Right column (`lg:col-span-1`):**
+
 - Sticky "Enrol Now" card (`position: sticky; top: 6rem`)
   - Price placeholder: "Contact for pricing"
   - Delivery method badge
@@ -422,6 +446,7 @@ interface CourseCardProps {
 ### `RegisterInterestModal.tsx` (extracted)
 
 Extracted verbatim from current `App.tsx`. Props:
+
 ```typescript
 interface RegisterInterestModalProps {
   course: Course;
@@ -436,6 +461,7 @@ Internals remain identical to the existing inline modal — no API or Turnstile 
 ### `About.tsx`
 
 **Sections:**
+
 1. **Hero Banner** — `bg-gradient-to-br from-secondary-900 to-primary-900`, white text, "About Perfxcel" h1, 2-line subheading.
 2. **Our Story** — `grid md:grid-cols-2 gap-16`, left: 3 paragraphs, right: stats panel (Founded, HQ, Annual Programs).
 3. **Mission & Vision** — `grid md:grid-cols-2 gap-8`, two `glass-panel` cards: each with a large icon, title (`Mission` / `Vision`), and 2-sentence description.
@@ -448,14 +474,15 @@ Internals remain identical to the existing inline modal — no API or Turnstile 
 
 ## Route Table (final)
 
-| Path | Component | Description |
-|------|-----------|-------------|
-| `/` | `Home` | Marketing homepage |
-| `/courses` | `Catalog` | Course catalog with filters |
-| `/courses/:id` | `CourseDetail` | Individual course page |
-| `/about` | `About` | About page |
+| Path           | Component      | Description                 |
+| -------------- | -------------- | --------------------------- |
+| `/`            | `Home`         | Marketing homepage          |
+| `/courses`     | `Catalog`      | Course catalog with filters |
+| `/courses/:id` | `CourseDetail` | Individual course page      |
+| `/about`       | `About`        | About page                  |
 
 **`App.tsx` after refactor:**
+
 ```tsx
 export default function App() {
   return (
@@ -463,10 +490,10 @@ export default function App() {
       <Navbar />
       <main className="flex-1">
         <Routes>
-          <Route path="/"           element={<Home />} />
-          <Route path="/courses"    element={<Catalog />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/courses" element={<Catalog />} />
           <Route path="/courses/:id" element={<CourseDetail />} />
-          <Route path="/about"      element={<About />} />
+          <Route path="/about" element={<About />} />
         </Routes>
       </main>
       <Footer />
@@ -494,6 +521,7 @@ getCourse(id)
 ```
 
 **`useTaxonomies` hook:**
+
 ```typescript
 export function useTaxonomies() {
   const [taxonomies, setTaxonomies] = useState<TaxonomyCollection | null>(null);
@@ -512,6 +540,7 @@ export function useTaxonomies() {
 ```
 
 **`useCourses` hook:**
+
 ```typescript
 export function useCourses(filters: CourseFilters) {
   const [courses, setCourses] = useState<Course[]>([]);
@@ -534,14 +563,14 @@ export function useCourses(filters: CourseFilters) {
 
 ## Leoron Design Inspirations & Improvements
 
-| Leoron Pattern | Perfxcel Implementation | Improvement |
-|----------------|------------------------|-------------|
-| Sticky top nav with courses mega-menu | Same pattern — 4-column mega menu | Better glassmorphism, smoother animations |
-| Hero with stat counters | Full-screen dark hero with stats row | More modern gradient + geometric pattern |
-| Category browsing grid | Dynamic `getTaxonomies()` powered cards | Icons from lucide-react mapped per category |
-| Testimonials carousel | Static 6-card grid (no JS carousel needed) | Dark section with 5-star UI — premium look |
-| Corporate CTA band | Fuchsia gradient band | Brand-consistent color vs Leoron's blue |
-| Footer 4-column | Same 4-column pattern | Logo + social icons, brand description |
-| Course detail sidebar | Sticky enrol card in right column | Replaces Leoron's hidden sidebar CTA |
-| Arabic language toggle | Not in scope (Perfxcel is English-only for now) | Future: i18n support |
-| Leoron's partner logo strip | Gradient-pill "accreditations" on About page | No external image dependency |
+| Leoron Pattern                        | Perfxcel Implementation                         | Improvement                                 |
+| ------------------------------------- | ----------------------------------------------- | ------------------------------------------- |
+| Sticky top nav with courses mega-menu | Same pattern — 4-column mega menu               | Better glassmorphism, smoother animations   |
+| Hero with stat counters               | Full-screen dark hero with stats row            | More modern gradient + geometric pattern    |
+| Category browsing grid                | Dynamic `getTaxonomies()` powered cards         | Icons from lucide-react mapped per category |
+| Testimonials carousel                 | Static 6-card grid (no JS carousel needed)      | Dark section with 5-star UI — premium look  |
+| Corporate CTA band                    | Fuchsia gradient band                           | Brand-consistent color vs Leoron's blue     |
+| Footer 4-column                       | Same 4-column pattern                           | Logo + social icons, brand description      |
+| Course detail sidebar                 | Sticky enrol card in right column               | Replaces Leoron's hidden sidebar CTA        |
+| Arabic language toggle                | Not in scope (Perfxcel is English-only for now) | Future: i18n support                        |
+| Leoron's partner logo strip           | Gradient-pill "accreditations" on About page    | No external image dependency                |

@@ -21,7 +21,8 @@ if (dsn) {
   initializeReactSentry({
     dsn,
     // Falls back to Vite's built-in MODE ("development" / "production")
-    environment: import.meta.env.VITE_SENTRY_ENVIRONMENT ?? import.meta.env.MODE,
+    environment:
+      import.meta.env.VITE_SENTRY_ENVIRONMENT ?? import.meta.env.MODE,
     // Optional — set VITE_APP_VERSION (e.g. git SHA) to link events to a release
     release: import.meta.env.VITE_APP_VERSION,
 

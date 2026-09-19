@@ -6,11 +6,11 @@ End-to-end enrollment tracking and certificate verification system for Perfxcel.
 
 ## In-Scope Repositories
 
-| Repo | Role |
-|------|------|
-| `perfxcel-api` | Backend — enrollment/certificate CRUD, PDF generation, QR, email, public verification |
-| `perfxcel-admin` | Admin SPA — convert interests to enrollments, manage enrollment status |
-| `perfxcel-app` | Public SPA — `/verify` page |
+| Repo             | Role                                                                                  |
+| ---------------- | ------------------------------------------------------------------------------------- |
+| `perfxcel-api`   | Backend — enrollment/certificate CRUD, PDF generation, QR, email, public verification |
+| `perfxcel-admin` | Admin SPA — convert interests to enrollments, manage enrollment status                |
+| `perfxcel-app`   | Public SPA — `/verify` page                                                           |
 
 ---
 
@@ -35,6 +35,7 @@ End-to-end enrollment tracking and certificate verification system for Perfxcel.
   - `pdf_url` text not null — public URL to the stored PDF
 
 **REQ-1.2** RLS policies must be applied:
+
 - `enrollments`: admin-only insert/update/select (i.e., authenticated service-role access; no public reads)
 - `certificates`: admin-only insert; **public select** (for verification endpoint)
 
@@ -53,6 +54,7 @@ End-to-end enrollment tracking and certificate verification system for Perfxcel.
 **REQ-3.1** A new route file `src/routes/enrollments.ts` and controller file `src/controllers/enrollmentController.ts` must be created.
 
 **REQ-3.2** `POST /api/v1/enrollments` — Create an enrollment from an accepted interest.
+
 - Request body: `{ interest_id: string }`
 - Validates that the referenced `course_interest` exists
 - Validates that an enrollment for this interest does not already exist (409 conflict if duplicate)
@@ -60,10 +62,12 @@ End-to-end enrollment tracking and certificate verification system for Perfxcel.
 - Response: `{ status: "success", data: Enrollment }`
 
 **REQ-3.3** `GET /api/v1/enrollments` — List all enrollments, joined with the related interest and course.
+
 - Response: `{ status: "success", results: number, data: Enrollment[] }`
 - Each item includes: `id`, `status`, `created_at`, `interest` (name, email, course title)
 
 **REQ-3.4** `PATCH /api/v1/enrollments/:id` — Update enrollment status.
+
 - Request body: `{ status: 'pending' | 'in_progress' | 'achieved' | 'dropped' }`
 - If `status` is set to `'achieved'` and no certificate exists yet for this enrollment, the following must happen **synchronously** in the same request:
   1. Generate a unique 8-character alphanumeric uppercase `credential_id` (retry on collision)
@@ -85,6 +89,7 @@ End-to-end enrollment tracking and certificate verification system for Perfxcel.
 **REQ-4.1** A new route file `src/routes/verify.ts` and controller file `src/controllers/verifyController.ts` must be created.
 
 **REQ-4.2** `POST /api/v1/verify` — Public endpoint, no auth required.
+
 - Request body: `{ credential_id: string, turnstileToken: string }`
 - If `turnstileToken` is missing or empty, throw a `ValidationError` (400)
 - Validate the Turnstile token against Cloudflare's `siteverify` API using `VITE_PERFXCEL_TURNSTILE_SECRET_KEY` (same pattern as `registerInterest` in `courseController.ts`)
@@ -113,6 +118,7 @@ End-to-end enrollment tracking and certificate verification system for Perfxcel.
 ### REQ-5 — New Dependencies (`perfxcel-api`)
 
 **REQ-5.1** The following packages must be added to `perfxcel-api/package.json` and installed:
+
 - `pdf-lib` — PDF generation
 - `qrcode` — QR code generation
 - `nodemailer` — SMTP email sending
@@ -120,6 +126,7 @@ End-to-end enrollment tracking and certificate verification system for Perfxcel.
 **REQ-5.2** Type definition packages `@types/qrcode` and `@types/nodemailer` must be added to `devDependencies`.
 
 **REQ-5.3** New environment variables needed:
+
 - `SMTP_HOST` — SMTP server hostname
 - `SMTP_PORT` — SMTP server port (default `587`)
 - `SMTP_USER` — SMTP username
@@ -149,6 +156,7 @@ End-to-end enrollment tracking and certificate verification system for Perfxcel.
 **REQ-7.2** The table must display the following columns: Candidate Name, Email, Course Title, Status, Created Date, Actions.
 
 **REQ-7.3** The status must be displayed as a colour-coded badge consistent with the style in `Interests.tsx`:
+
 - `pending` → blue
 - `in_progress` → yellow
 - `achieved` → green
@@ -157,11 +165,13 @@ End-to-end enrollment tracking and certificate verification system for Perfxcel.
 **REQ-7.4** Each row must have a status dropdown/action allowing the admin to transition status. The "Achieved" transition must show a loading indicator while the backend generates and sends the certificate.
 
 **REQ-7.5** Add the following to `src/App.tsx`:
+
 - Import `Enrollments` from `./pages/Enrollments`
 - Add `<Route path="/enrollments" element={<Enrollments />} />` inside the protected `AuthGuard` layout
 - Add a sidebar `<Link to="/enrollments">` between Interests and the end of the nav list
 
 **REQ-7.6** Add the API helper functions for enrollment in `src/api.ts`:
+
 - `getEnrollments()` — calls `GET /api/v1/enrollments`
 - `createEnrollment(interestId: string)` — calls `POST /api/v1/enrollments`
 - `updateEnrollmentStatus(id: string, status: string)` — calls `PATCH /api/v1/enrollments/:id`
@@ -173,6 +183,7 @@ End-to-end enrollment tracking and certificate verification system for Perfxcel.
 **REQ-8.1** Create a new page `src/pages/Verify.tsx`.
 
 **REQ-8.2** The page must contain:
+
 - A heading (e.g. "Verify Certificate")
 - A text input for the `credential_id` — pre-populated from the `id` URL query parameter if present
 - A `<Turnstile>` widget from `@marsidev/react-turnstile` using the site key from `VITE_TURNSTILE_SITE_KEY`
@@ -180,6 +191,7 @@ End-to-end enrollment tracking and certificate verification system for Perfxcel.
 - A results section below the form showing the verification outcome
 
 **REQ-8.3** On successful verification (`valid: true`), display:
+
 - A green "✓ Valid Certificate" banner
 - Candidate Name, Course Title, Issue Date
 - A "Download Certificate" link pointing to `pdf_url`
@@ -190,6 +202,7 @@ End-to-end enrollment tracking and certificate verification system for Perfxcel.
 **REQ-8.5** The verification API call must go to `POST /api/v1/verify` using the existing `api` Axios instance from `src/api.ts`. Add a `verifyCertificate(credentialId: string, turnstileToken: string)` helper to `src/api.ts`.
 
 **REQ-8.6** Add the `/verify` route to `src/App.tsx`:
+
 - Import `Verify` from `./pages/Verify`
 - Add `<Route path="/verify" element={<Verify />} />` inside the existing routes (no auth guard — this is public)
 

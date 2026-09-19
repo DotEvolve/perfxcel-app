@@ -17,7 +17,7 @@ export interface CourseSchedule {
   end_date: string | null;
   location: string | null;
   method: string | null;
-  status: 'open' | 'guaranteed' | 'filling_fast' | 'closed' | 'cancelled';
+  status: "open" | "guaranteed" | "filling_fast" | "closed" | "cancelled";
 }
 
 export interface Course {
@@ -36,7 +36,7 @@ export interface Course {
   delivery_modes?: TaxonomyItem[];
   course_schedules?: CourseSchedule[];
   is_blended?: boolean;
-  status?: 'active' | 'archived' | 'deleted';
+  status?: "active" | "archived" | "deleted";
   is_public?: boolean;
   image_url?: string | null;
   short_code?: string;

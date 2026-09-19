@@ -17,22 +17,23 @@ export default function Footer() {
               className="h-14 w-14 object-contain drop-shadow-md"
             />
             <div className="flex flex-col justify-center mt-1">
-              <span 
-                className="text-3xl text-white tracking-wide" 
-                style={{ fontFamily: '"Shrikhand", cursive', lineHeight: '1' }}
+              <span
+                className="text-3xl text-white tracking-wide"
+                style={{ fontFamily: '"Shrikhand", cursive', lineHeight: "1" }}
               >
                 PerfXcel
               </span>
-              <span 
+              <span
                 className="text-xs font-bold text-accent-500 tracking-wide italic"
-                style={{ lineHeight: '1' }}
+                style={{ lineHeight: "1" }}
               >
                 Performance Excellence
               </span>
             </div>
           </Link>
           <p className="mb-6">
-            Empowering professionals across the EMEA region with world-class, accredited training programs.
+            Empowering professionals across the EMEA region with world-class,
+            accredited training programs.
           </p>
           <div className="flex gap-4">
             <a href="#" className="hover:text-primary-500 transition-colors">
@@ -52,26 +53,44 @@ export default function Footer() {
           <h4 className="text-white font-bold text-lg mb-6">Quick Links</h4>
           <ul className="space-y-3">
             <li>
-              <Link to="/" className="hover:text-white transition-colors">Home</Link>
+              <Link to="/" className="hover:text-white transition-colors">
+                Home
+              </Link>
             </li>
             <li>
-              <Link to="/courses" className="hover:text-white transition-colors">All Courses</Link>
+              <Link
+                to="/courses"
+                className="hover:text-white transition-colors"
+              >
+                All Courses
+              </Link>
             </li>
             <li>
-              <Link to="/about" className="hover:text-white transition-colors">About Us</Link>
+              <Link to="/about" className="hover:text-white transition-colors">
+                About Us
+              </Link>
             </li>
             <li>
-              <Link to="/verify" className="hover:text-white transition-colors">Verify Certificate</Link>
+              <Link to="/verify" className="hover:text-white transition-colors">
+                Verify Certificate
+              </Link>
             </li>
             <li>
-              <Link to="/contact" className="hover:text-white transition-colors">Contact Us</Link>
+              <Link
+                to="/contact"
+                className="hover:text-white transition-colors"
+              >
+                Contact Us
+              </Link>
             </li>
           </ul>
         </div>
 
         {/* Col 3: Training Delivery */}
         <div>
-          <h4 className="text-white font-bold text-lg mb-6">Training Delivery</h4>
+          <h4 className="text-white font-bold text-lg mb-6">
+            Training Delivery
+          </h4>
           <ul className="space-y-3">
             {loading ? (
               <>
@@ -79,9 +98,12 @@ export default function Footer() {
                 <li className="animate-pulse bg-secondary-700 h-4 rounded w-1/2"></li>
               </>
             ) : (
-              taxonomies?.delivery_modes?.slice(0, 4).map(mode => (
+              taxonomies?.delivery_modes?.slice(0, 4).map((mode) => (
                 <li key={mode.id}>
-                  <Link to={`/courses?delivery=${mode.id}`} className="hover:text-white transition-colors">
+                  <Link
+                    to={`/courses?delivery=${mode.id}`}
+                    className="hover:text-white transition-colors"
+                  >
                     {mode.name}
                   </Link>
                 </li>
@@ -96,12 +118,18 @@ export default function Footer() {
           <address className="not-italic space-y-3">
             <p>Riyadh, Kingdom of Saudi Arabia</p>
             <p>
-              <a href="mailto:info@perfxcel.com" className="hover:text-white transition-colors">
+              <a
+                href="mailto:info@perfxcel.com"
+                className="hover:text-white transition-colors"
+              >
                 info@perfxcel.com
               </a>
             </p>
             <p>
-              <a href="tel:+97141234567" className="hover:text-white transition-colors">
+              <a
+                href="tel:+97141234567"
+                className="hover:text-white transition-colors"
+              >
                 +971 4 123 4567
               </a>
             </p>
@@ -111,12 +139,27 @@ export default function Footer() {
 
       <div className="border-t border-white/10 py-6 max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center text-sm">
         <p className="mb-4 md:mb-0">
-          &copy; 2026 PerfXcel by <a href="https://dotevolve.net" target="_blank" rel="noopener noreferrer" className="hover:text-primary-500 underline transition-colors">DotEvolve</a>. All rights reserved.
+          &copy; 2026 PerfXcel by{" "}
+          <a
+            href="https://dotevolve.net"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-primary-500 underline transition-colors"
+          >
+            DotEvolve
+          </a>
+          . All rights reserved.
         </p>
         <div className="flex gap-6">
-          <Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
-          <Link to="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
-          <Link to="/cookies" className="hover:text-white transition-colors">Cookie Policy</Link>
+          <Link to="/privacy" className="hover:text-white transition-colors">
+            Privacy Policy
+          </Link>
+          <Link to="/terms" className="hover:text-white transition-colors">
+            Terms of Service
+          </Link>
+          <Link to="/cookies" className="hover:text-white transition-colors">
+            Cookie Policy
+          </Link>
         </div>
       </div>
     </footer>

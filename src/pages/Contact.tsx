@@ -16,8 +16,10 @@ export default function Contact() {
     company: "",
     message: "",
   });
-  
-  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+
+  const [status, setStatus] = useState<
+    "idle" | "submitting" | "success" | "error"
+  >("idle");
   const [errorMessage, setErrorMessage] = useState("");
   const [turnstileToken, setTurnstileToken] = useState("");
 
@@ -28,7 +30,9 @@ export default function Contact() {
           setCourse(data);
           setFormData((prev) => ({
             ...prev,
-            message: prev.message || `I am enquiring about corporate group training for the course: ${data.title}`
+            message:
+              prev.message ||
+              `I am enquiring about corporate group training for the course: ${data.title}`,
           }));
         })
         .catch(console.error);
@@ -52,7 +56,10 @@ export default function Contact() {
       });
       setStatus("success");
     } catch (error: any) {
-      setErrorMessage(error.response?.data?.message || "Failed to submit enquiry. Please try again.");
+      setErrorMessage(
+        error.response?.data?.message ||
+          "Failed to submit enquiry. Please try again.",
+      );
       setStatus("error");
     }
   };
@@ -62,12 +69,18 @@ export default function Contact() {
       <div className="py-20 px-4 sm:px-6 lg:px-8 max-w-3xl mx-auto text-center">
         <div className="bg-white rounded-3xl p-12 shadow-xl border border-gray-100 flex flex-col items-center">
           <CheckCircle2 className="w-20 h-20 text-green-500 mb-6" />
-          <h2 className="text-3xl font-extrabold text-secondary-900 mb-4">Enquiry Received</h2>
+          <h2 className="text-3xl font-extrabold text-secondary-900 mb-4">
+            Enquiry Received
+          </h2>
           <p className="text-lg text-secondary-600 mb-8">
-            Thank you for reaching out! We've received your enquiry and our team will get back to you shortly.
+            Thank you for reaching out! We've received your enquiry and our team
+            will get back to you shortly.
           </p>
-          <button 
-            onClick={() => { setStatus("idle"); setFormData({ name: "", email: "", company: "", message: "" }); }}
+          <button
+            onClick={() => {
+              setStatus("idle");
+              setFormData({ name: "", email: "", company: "", message: "" });
+            }}
             className="text-primary-600 font-bold hover:text-primary-700"
           >
             Send another enquiry
@@ -80,7 +93,9 @@ export default function Contact() {
   return (
     <div className="pt-8 pb-20 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-extrabold text-secondary-900 mb-4">Contact Us</h1>
+        <h1 className="text-4xl font-extrabold text-secondary-900 mb-4">
+          Contact Us
+        </h1>
         <p className="text-lg text-secondary-600 max-w-2xl mx-auto">
           {course
             ? `Get in touch with us regarding corporate group training for: ${course.title}`
@@ -99,55 +114,86 @@ export default function Contact() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label htmlFor="name" className="block text-sm font-bold text-secondary-700 mb-2">Full Name *</label>
+              <label
+                htmlFor="name"
+                className="block text-sm font-bold text-secondary-700 mb-2"
+              >
+                Full Name *
+              </label>
               <input
                 type="text"
                 id="name"
                 required
                 className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors bg-gray-50 focus:bg-white"
                 value={formData.name}
-                onChange={e => setFormData({ ...formData, name: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, name: e.target.value })
+                }
               />
             </div>
             <div>
-              <label htmlFor="email" className="block text-sm font-bold text-secondary-700 mb-2">Work Email *</label>
+              <label
+                htmlFor="email"
+                className="block text-sm font-bold text-secondary-700 mb-2"
+              >
+                Work Email *
+              </label>
               <input
                 type="email"
                 id="email"
                 required
                 className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors bg-gray-50 focus:bg-white"
                 value={formData.email}
-                onChange={e => setFormData({ ...formData, email: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, email: e.target.value })
+                }
               />
             </div>
           </div>
 
           <div>
-            <label htmlFor="company" className="block text-sm font-bold text-secondary-700 mb-2">Company Name</label>
+            <label
+              htmlFor="company"
+              className="block text-sm font-bold text-secondary-700 mb-2"
+            >
+              Company Name
+            </label>
             <input
               type="text"
               id="company"
               className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors bg-gray-50 focus:bg-white"
               value={formData.company}
-              onChange={e => setFormData({ ...formData, company: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, company: e.target.value })
+              }
             />
           </div>
 
           <div>
-            <label htmlFor="message" className="block text-sm font-bold text-secondary-700 mb-2">How can we help you? *</label>
+            <label
+              htmlFor="message"
+              className="block text-sm font-bold text-secondary-700 mb-2"
+            >
+              How can we help you? *
+            </label>
             <textarea
               id="message"
               required
               rows={5}
               className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors bg-gray-50 focus:bg-white"
               value={formData.message}
-              onChange={e => setFormData({ ...formData, message: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, message: e.target.value })
+              }
             ></textarea>
           </div>
 
           <div className="flex justify-center my-6">
             <Turnstile
-              siteKey={import.meta.env.VITE_PERFXCEL_TURNSTILE_SITE_KEY || "1x00000000000000000000AA"}
+              siteKey={
+                import.meta.env.VITE_PERFXCEL_TURNSTILE_SITE_KEY ||
+                "1x00000000000000000000AA"
+              }
               onSuccess={(token) => setTurnstileToken(token)}
             />
           </div>
