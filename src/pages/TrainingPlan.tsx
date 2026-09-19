@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { requestTrainingPlan } from "../api";
-import { AppError } from "@dotevolve/error-utils/react";
+import { Turnstile } from "@marsidev/react-turnstile";
 
 export default function TrainingPlan() {
   const [formData, setFormData] = useState({
@@ -13,21 +13,27 @@ export default function TrainingPlan() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [turnstileError, setTurnstileError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!turnstileToken) {
+      setError("Please complete the security check.");
+      return;
+    }
     setIsSubmitting(true);
     setError(null);
 
     try {
-      await requestTrainingPlan(formData);
+      await requestTrainingPlan({ ...formData, turnstileToken });
       setIsSuccess(true);
-    } catch (err: any) {
-      if (err instanceof AppError) {
-        setError(err.message);
-      } else {
-        setError("An unexpected error occurred. Please try again.");
-      }
+    } catch (err: unknown) {
+      const axiosErr = err as { response?: { data?: { message?: string } } };
+      setError(
+        axiosErr.response?.data?.message ??
+        "An unexpected error occurred. Please try again."
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -98,6 +104,7 @@ export default function TrainingPlan() {
                     onClick={() => {
                       setIsSuccess(false);
                       setFormData({ name: "", email: "", mobile: "", designation: "", company: "" });
+                      setTurnstileToken(null);
                     }}
                     className="text-primary-600 font-medium hover:text-primary-700 transition-colors"
                   >
@@ -195,9 +202,23 @@ export default function TrainingPlan() {
                     </div>
 
                     <div className="pt-2">
+                      <div className="mb-4">
+                        <Turnstile
+                          siteKey={import.meta.env.VITE_PERFXCEL_TURNSTILE_SITE_KEY || "1x00000000000000000000AA"}
+                          onSuccess={(token) => { setTurnstileToken(token); setTurnstileError(null); }}
+                          onExpire={() => setTurnstileToken(null)}
+                          onError={() => {
+                            setTurnstileToken(null);
+                            setTurnstileError("Security check failed to load. Please refresh the page.");
+                          }}
+                        />
+                        {turnstileError && (
+                          <p className="mt-2 text-sm text-red-600">{turnstileError}</p>
+                        )}
+                      </div>
                       <button
                         type="submit"
-                        disabled={isSubmitting}
+                        disabled={isSubmitting || !turnstileToken}
                         className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                       >
                         {isSubmitting ? (

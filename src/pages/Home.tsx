@@ -171,9 +171,9 @@ export default function Home() {
           <p className="text-xl text-primary-100 mb-10 max-w-2xl mx-auto">
             Bespoke corporate training programs designed specifically for your organisation's unique challenges and strategic goals.
           </p>
-          <button className="bg-accent-500 text-secondary-900 font-bold px-8 py-4 rounded-xl shadow-xl hover:bg-accent-600 transition-colors">
+          <Link to="/contact" className="inline-block bg-accent-500 text-secondary-900 font-bold px-8 py-4 rounded-xl shadow-xl hover:bg-accent-600 transition-colors">
             Request a Proposal &rarr;
-          </button>
+          </Link>
         </div>
       </section>
     </div>

@@ -96,7 +96,7 @@ export const submitContact = async (data: { name: string; email: string; company
   return response.data;
 };
 
-export const requestTrainingPlan = async (data: { name: string; email: string; mobile: string; designation?: string; company?: string; }) => {
+export const requestTrainingPlan = async (data: { name: string; email: string; mobile: string; designation?: string; company?: string; turnstileToken: string; }) => {
   const response = await api.post("/training-plan/request", data);
   return response.data;
 };

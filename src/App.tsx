@@ -12,6 +12,7 @@ import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import Cookies from "./pages/Cookies";
 import TrainingPlan from "./pages/TrainingPlan";
+import { TaxonomyProvider } from "./contexts/TaxonomyContext";
 
 function ErrorFallback() {
   return (
@@ -38,26 +39,28 @@ function ErrorFallback() {
 export default function App() {
   return (
     <Sentry.ErrorBoundary fallback={<ErrorFallback />}>
-      <div className="min-h-screen flex flex-col font-sans text-secondary-800 bg-secondary-50">
-        <Navbar />
+      <TaxonomyProvider>
+        <div className="min-h-screen flex flex-col font-sans text-secondary-800 bg-secondary-50">
+          <Navbar />
 
-        <main className="flex-1 w-full">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/courses" element={<Catalog />} />
-            <Route path="/courses/:id" element={<CourseDetail />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/training-plan" element={<TrainingPlan />} />
-            <Route path="/verify" element={<Verify />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/privacy" element={<Privacy />} />
-            <Route path="/terms" element={<Terms />} />
-            <Route path="/cookies" element={<Cookies />} />
-          </Routes>
-        </main>
+          <main className="flex-1 w-full">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/courses" element={<Catalog />} />
+              <Route path="/courses/:id" element={<CourseDetail />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/training-plan" element={<TrainingPlan />} />
+              <Route path="/verify" element={<Verify />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/cookies" element={<Cookies />} />
+            </Routes>
+          </main>
 
-        <Footer />
-      </div>
+          <Footer />
+        </div>
+      </TaxonomyProvider>
     </Sentry.ErrorBoundary>
   );
 }
