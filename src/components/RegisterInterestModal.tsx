@@ -33,7 +33,7 @@ export default function RegisterInterestModal({
     }
     setSubmitting(true);
     try {
-      await submitCourseInterest(course.id, formData, turnstileToken);
+      await submitCourseInterest(course.id, { ...formData, request_brochure: sendBrochure }, turnstileToken);
       setSuccess(true);
     } catch (err) {
       console.error(err);
@@ -62,7 +62,9 @@ export default function RegisterInterestModal({
 
         {success ? (
           <div className="bg-green-50 text-green-700 p-4 rounded-xl text-center font-medium">
-            Thank you! We've received your details.
+            {sendBrochure
+              ? "Thank you! We've received your details and sent the course brochure to your email."
+              : "Thank you! We've received your details."}
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">

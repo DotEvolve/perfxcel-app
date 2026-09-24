@@ -83,7 +83,7 @@ export const getTaxonomies = async () => {
 
 export const submitCourseInterest = async (
   courseId: string,
-  data: { name: string; email: string; phone?: string; company?: string },
+  data: { name: string; email: string; phone?: string; company?: string; request_brochure?: boolean },
   turnstileToken: string,
 ) => {
   const response = await api.post(`/courses/${courseId}/interest`, {
@@ -128,20 +128,4 @@ export const requestTrainingPlan = async (data: {
   return response.data;
 };
 
-export const requestBrochure = async (
-  courseId: string,
-  data: {
-    name: string;
-    email: string;
-    phone?: string;
-    company?: string;
-    designation?: string;
-  },
-  turnstileToken: string,
-) => {
-  const response = await api.post(`/courses/${courseId}/brochure`, {
-    ...data,
-    turnstileToken,
-  });
-  return response.data;
-};
+
