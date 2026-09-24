@@ -205,9 +205,10 @@ export default function CourseDetail() {
             {course.overview && (
               <div className="mb-12">
                 <h2 className="font-bold text-secondary-900 text-2xl mb-4">Overview</h2>
-                <p className="text-secondary-700 leading-relaxed whitespace-pre-wrap text-lg">
-                  {course.overview}
-                </p>
+                <div 
+                  className="text-secondary-700 leading-relaxed text-lg prose prose-lg max-w-none"
+                  dangerouslySetInnerHTML={{ __html: course.overview }}
+                />
               </div>
             )}
 
