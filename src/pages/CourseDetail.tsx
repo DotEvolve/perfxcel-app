@@ -15,12 +15,58 @@ import {
   Users,
 } from "lucide-react";
 import RegisterInterestModal from "../components/RegisterInterestModal";
+import { BrochureModal } from "../components/BrochureModal";
+import { ChevronDown, ChevronUp, Download } from "lucide-react";
+
+function CourseOutline({ outline }: { outline: NonNullable<Course["course_outline"]> }) {
+  const [expandedDay, setExpandedDay] = useState<number | null>(1);
+  return (
+    <div className="mb-12">
+      <h3 className="font-bold text-secondary-900 text-2xl mb-6 flex items-center">
+        <Layers className="w-6 h-6 mr-2 text-primary-500" />
+        Course Outline
+      </h3>
+      <div className="space-y-4">
+        {outline.map((day) => (
+          <div key={day.day} className="border border-gray-200 rounded-xl overflow-hidden bg-white">
+            <button
+              onClick={() => setExpandedDay(expandedDay === day.day ? null : day.day)}
+              className="w-full px-6 py-4 flex justify-between items-center hover:bg-gray-50 focus:outline-none"
+            >
+              <div className="flex items-center text-left">
+                <span className="text-primary-600 font-bold mr-4">Day {day.day}</span>
+                <span className="font-semibold text-gray-900">{day.title}</span>
+              </div>
+              {expandedDay === day.day ? <ChevronUp className="w-5 h-5 text-gray-400" /> : <ChevronDown className="w-5 h-5 text-gray-400" />}
+            </button>
+            {expandedDay === day.day && (
+              <div className="px-6 py-4 border-t border-gray-100 bg-gray-50">
+                <ul className="space-y-4">
+                  {day.modules.map((module, idx) => (
+                    <li key={idx} className="flex flex-col">
+                      <div className="flex items-center justify-between">
+                        <span className="font-medium text-gray-900 text-sm">✓ {module.title}</span>
+                        {module.duration && <span className="text-xs text-gray-500 font-medium bg-white px-2 py-1 rounded border border-gray-200">{module.duration}</span>}
+                      </div>
+                      {module.description && <p className="text-sm text-gray-600 mt-1 pl-4 border-l-2 border-gray-200 ml-1">{module.description}</p>}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default function CourseDetail() {
   const { id } = useParams();
   const [course, setCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [showBrochureModal, setShowBrochureModal] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -159,6 +205,11 @@ export default function CourseDetail() {
               </div>
             </div>
 
+            {/* Course Outline */}
+            {course.course_outline && course.course_outline.length > 0 && (
+              <CourseOutline outline={course.course_outline} />
+            )}
+
             {/* Schedules */}
             {course.course_schedules && course.course_schedules.length > 0 && (
               <div>
@@ -291,10 +342,20 @@ export default function CourseDetail() {
 
               <button
                 onClick={() => setShowModal(true)}
-                className="w-full bg-accent-500 hover:bg-accent-600 text-secondary-900 font-bold py-4 rounded-xl shadow-lg shadow-accent-500/30 transform transition hover:-translate-y-0.5"
+                className="w-full bg-accent-500 hover:bg-accent-600 text-secondary-900 font-bold py-4 rounded-xl shadow-lg shadow-accent-500/30 transform transition hover:-translate-y-0.5 mb-3"
               >
                 Register Interest
               </button>
+
+              {course.brochure_url && (
+                <button
+                  onClick={() => setShowBrochureModal(true)}
+                  className="w-full bg-white hover:bg-gray-50 text-indigo-600 border-2 border-indigo-600 font-bold py-4 rounded-xl shadow-sm transform transition hover:-translate-y-0.5 flex items-center justify-center gap-2"
+                >
+                  <Download className="w-5 h-5" />
+                  Download Brochure
+                </button>
+              )}
 
               <div className="mt-4 text-center">
                 <Link
@@ -313,6 +374,14 @@ export default function CourseDetail() {
         <RegisterInterestModal
           course={course}
           onClose={() => setShowModal(false)}
+        />
+      )}
+      
+      {showBrochureModal && (
+        <BrochureModal
+          courseId={course.id}
+          isOpen={showBrochureModal}
+          onClose={() => setShowBrochureModal(false)}
         />
       )}
     </div>

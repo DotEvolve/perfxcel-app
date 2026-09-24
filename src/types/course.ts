@@ -20,6 +20,18 @@ export interface CourseSchedule {
   status: "open" | "guaranteed" | "filling_fast" | "closed" | "cancelled";
 }
 
+export interface CourseModule {
+  title: string;
+  description?: string;
+  duration?: string;
+}
+
+export interface CourseDay {
+  day: number;
+  title: string;
+  modules: CourseModule[];
+}
+
 export interface Course {
   id: string;
   slug?: string;
@@ -40,6 +52,8 @@ export interface Course {
   is_public?: boolean;
   image_url?: string | null;
   short_code?: string;
+  course_outline?: CourseDay[] | null;
+  brochure_url?: string | null;
 }
 
 export interface CourseFilters {
