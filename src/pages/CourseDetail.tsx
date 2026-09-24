@@ -15,8 +15,7 @@ import {
   Users,
 } from "lucide-react";
 import RegisterInterestModal from "../components/RegisterInterestModal";
-import { BrochureModal } from "../components/BrochureModal";
-import { ChevronDown, ChevronUp, Download } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 function CourseOutline({
   outline,
@@ -91,7 +90,6 @@ export default function CourseDetail() {
   const [course, setCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const [showBrochureModal, setShowBrochureModal] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -379,18 +377,10 @@ export default function CourseDetail() {
                 onClick={() => setShowModal(true)}
                 className="w-full bg-accent-500 hover:bg-accent-600 text-secondary-900 font-bold py-4 rounded-xl shadow-lg shadow-accent-500/30 transform transition hover:-translate-y-0.5 mb-3"
               >
-                Register Interest
+                {course.brochure_url
+                  ? "Register Interest & Download Brochure"
+                  : "Register Interest"}
               </button>
-
-              {course.brochure_url && (
-                <button
-                  onClick={() => setShowBrochureModal(true)}
-                  className="w-full bg-white hover:bg-gray-50 text-indigo-600 border-2 border-indigo-600 font-bold py-4 rounded-xl shadow-sm transform transition hover:-translate-y-0.5 flex items-center justify-center gap-2"
-                >
-                  <Download className="w-5 h-5" />
-                  Download Brochure
-                </button>
-              )}
 
               <div className="mt-4 text-center">
                 <Link
@@ -409,14 +399,7 @@ export default function CourseDetail() {
         <RegisterInterestModal
           course={course}
           onClose={() => setShowModal(false)}
-        />
-      )}
-
-      {showBrochureModal && (
-        <BrochureModal
-          courseId={course.id}
-          isOpen={showBrochureModal}
-          onClose={() => setShowBrochureModal(false)}
+          sendBrochure={!!course.brochure_url}
         />
       )}
     </div>

@@ -7,11 +7,13 @@ import type { Course } from "../types/course";
 interface RegisterInterestModalProps {
   course: Course;
   onClose: () => void;
+  sendBrochure?: boolean;
 }
 
 export default function RegisterInterestModal({
   course,
   onClose,
+  sendBrochure = false,
 }: RegisterInterestModalProps) {
   const [formData, setFormData] = useState({
     name: "",
