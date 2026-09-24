@@ -37,6 +37,7 @@ export interface Course {
   slug?: string;
   title: string;
   description: string;
+  overview?: string | null;
   objectives: string;
   target_audience: string;
   is_published: boolean;

@@ -202,6 +202,15 @@ export default function CourseDetail() {
               <p className="text-xl leading-relaxed">{course.description}</p>
             </div>
 
+            {course.overview && (
+              <div className="mb-12">
+                <h2 className="font-bold text-secondary-900 text-2xl mb-4">Overview</h2>
+                <p className="text-secondary-700 leading-relaxed whitespace-pre-wrap text-lg">
+                  {course.overview}
+                </p>
+              </div>
+            )}
+
             <div className="grid md:grid-cols-2 gap-6 mb-12">
               {/* Objectives */}
               <div className="glass-panel bg-white rounded-2xl p-8 border border-gray-100">
