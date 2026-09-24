@@ -130,7 +130,13 @@ export const requestTrainingPlan = async (data: {
 
 export const requestBrochure = async (
   courseId: string,
-  data: { name: string; email: string; phone?: string; company?: string; designation?: string },
+  data: {
+    name: string;
+    email: string;
+    phone?: string;
+    company?: string;
+    designation?: string;
+  },
   turnstileToken: string,
 ) => {
   const response = await api.post(`/courses/${courseId}/brochure`, {

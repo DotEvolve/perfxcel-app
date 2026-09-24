@@ -18,7 +18,11 @@ import RegisterInterestModal from "../components/RegisterInterestModal";
 import { BrochureModal } from "../components/BrochureModal";
 import { ChevronDown, ChevronUp, Download } from "lucide-react";
 
-function CourseOutline({ outline }: { outline: NonNullable<Course["course_outline"]> }) {
+function CourseOutline({
+  outline,
+}: {
+  outline: NonNullable<Course["course_outline"]>;
+}) {
   const [expandedDay, setExpandedDay] = useState<number | null>(1);
   return (
     <div className="mb-12">
@@ -28,16 +32,27 @@ function CourseOutline({ outline }: { outline: NonNullable<Course["course_outlin
       </h3>
       <div className="space-y-4">
         {outline.map((day) => (
-          <div key={day.day} className="border border-gray-200 rounded-xl overflow-hidden bg-white">
+          <div
+            key={day.day}
+            className="border border-gray-200 rounded-xl overflow-hidden bg-white"
+          >
             <button
-              onClick={() => setExpandedDay(expandedDay === day.day ? null : day.day)}
+              onClick={() =>
+                setExpandedDay(expandedDay === day.day ? null : day.day)
+              }
               className="w-full px-6 py-4 flex justify-between items-center hover:bg-gray-50 focus:outline-none"
             >
               <div className="flex items-center text-left">
-                <span className="text-primary-600 font-bold mr-4">Day {day.day}</span>
+                <span className="text-primary-600 font-bold mr-4">
+                  Day {day.day}
+                </span>
                 <span className="font-semibold text-gray-900">{day.title}</span>
               </div>
-              {expandedDay === day.day ? <ChevronUp className="w-5 h-5 text-gray-400" /> : <ChevronDown className="w-5 h-5 text-gray-400" />}
+              {expandedDay === day.day ? (
+                <ChevronUp className="w-5 h-5 text-gray-400" />
+              ) : (
+                <ChevronDown className="w-5 h-5 text-gray-400" />
+              )}
             </button>
             {expandedDay === day.day && (
               <div className="px-6 py-4 border-t border-gray-100 bg-gray-50">
@@ -45,10 +60,20 @@ function CourseOutline({ outline }: { outline: NonNullable<Course["course_outlin
                   {day.modules.map((module, idx) => (
                     <li key={idx} className="flex flex-col">
                       <div className="flex items-center justify-between">
-                        <span className="font-medium text-gray-900 text-sm">✓ {module.title}</span>
-                        {module.duration && <span className="text-xs text-gray-500 font-medium bg-white px-2 py-1 rounded border border-gray-200">{module.duration}</span>}
+                        <span className="font-medium text-gray-900 text-sm">
+                          ✓ {module.title}
+                        </span>
+                        {module.duration && (
+                          <span className="text-xs text-gray-500 font-medium bg-white px-2 py-1 rounded border border-gray-200">
+                            {module.duration}
+                          </span>
+                        )}
                       </div>
-                      {module.description && <p className="text-sm text-gray-600 mt-1 pl-4 border-l-2 border-gray-200 ml-1">{module.description}</p>}
+                      {module.description && (
+                        <p className="text-sm text-gray-600 mt-1 pl-4 border-l-2 border-gray-200 ml-1">
+                          {module.description}
+                        </p>
+                      )}
                     </li>
                   ))}
                 </ul>
@@ -376,7 +401,7 @@ export default function CourseDetail() {
           onClose={() => setShowModal(false)}
         />
       )}
-      
+
       {showBrochureModal && (
         <BrochureModal
           courseId={course.id}
