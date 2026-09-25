@@ -7,6 +7,7 @@ export const onRequest: PagesFunction = async (context) => {
   if (url.hostname === 'perfxcel.com' || url.hostname === 'www.perfxcel.com') {
     return new Response(
 `User-agent: *
+Content-Signal: ai-train=yes, search=yes, ai-input=yes
 Allow: /
 Disallow: /api/
 Disallow: /storage/
