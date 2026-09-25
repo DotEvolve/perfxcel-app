@@ -52,7 +52,7 @@ export default function TrainingPlan() {
             {/* Left side: Information */}
             <div className="bg-primary-900 text-white p-10 flex flex-col justify-center">
               <h1 className="text-3xl font-bold mb-6">
-                Download the Enterprise Training Plan
+                Download our Training Plan
               </h1>
               <p className="text-primary-100 mb-8 leading-relaxed">
                 Unlock customized learning paths for your organization. Our
