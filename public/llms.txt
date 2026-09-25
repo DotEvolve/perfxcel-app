@@ -1,0 +1,15 @@
+# Perfxcel
+
+> Performance Management Platform. Drive organizational alignment and elevate employee performance tracking.
+
+## Overview
+Perfxcel empowers organizations to implement transparent, goal-oriented performance management. From continuous feedback to structured appraisals, Perfxcel aligns employee growth with business objectives.
+
+## Key Features
+- **Goal Tracking:** Set, track, and measure OKRs and KPIs.
+- **Continuous Feedback:** 360-degree feedback tools to foster a culture of recognition.
+- **Appraisal Workflows:** Streamlined review cycles with customizable templates.
+- **Analytics & Insights:** Identify top performers and skill gaps instantly.
+
+## Links
+- Website: https://perfxcel.com
