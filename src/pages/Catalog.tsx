@@ -71,26 +71,13 @@ export default function Catalog() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row gap-8 pb-20">
-        {/* Sidebar Filters */}
-        <aside className="w-full md:w-72 shrink-0 space-y-6">
-          <div className="glass-panel p-6 rounded-2xl shadow-sm border border-gray-100 sticky top-28">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-bold text-secondary-900 flex items-center">
-                <Search className="w-5 h-5 mr-2 text-primary-500" /> Filters
-              </h3>
-              {hasActiveFilters && (
-                <button
-                  onClick={clearAllFilters}
-                  className="text-sm text-primary-600 hover:text-primary-700 font-medium"
-                >
-                  Clear All
-                </button>
-              )}
-            </div>
-
-            <div className="space-y-5">
-              <div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-8 pb-20">
+        {/* Top Bar Filters */}
+        <div className="w-full">
+          <div className="glass-panel p-6 rounded-2xl shadow-sm border border-gray-100 mb-8">
+            <div className="flex flex-col md:flex-row items-start md:items-end gap-4">
+              <div className="flex-1 w-full flex flex-col sm:flex-row flex-wrap gap-4">
+              <div className="flex-1 min-w-[150px]">
                 <label className="block text-sm font-bold text-secondary-800 mb-2">
                   Category
                 </label>
@@ -102,14 +89,14 @@ export default function Catalog() {
                 >
                   <option value="">All Categories</option>
                   {taxonomies?.categories.map((c) => (
-                    <option key={c.id} value={c.id}>
+                     <option key={c.id} value={c.id}>
                       {c.name}
                     </option>
                   ))}
                 </select>
               </div>
 
-              <div>
+              <div className="flex-1 min-w-[150px]">
                 <label className="block text-sm font-bold text-secondary-800 mb-2">
                   Location
                 </label>
@@ -128,7 +115,7 @@ export default function Catalog() {
                 </select>
               </div>
 
-              <div>
+              <div className="flex-1 min-w-[150px]">
                 <label className="block text-sm font-bold text-secondary-800 mb-2">
                   Association
                 </label>
@@ -147,7 +134,7 @@ export default function Catalog() {
                 </select>
               </div>
 
-              <div>
+              <div className="flex-1 min-w-[150px]">
                 <label className="block text-sm font-bold text-secondary-800 mb-2">
                   Delivery Type
                 </label>
@@ -165,8 +152,28 @@ export default function Catalog() {
                 </select>
               </div>
             </div>
+
+            <div className="flex items-center gap-4 w-full md:w-auto mt-4 md:mt-0">
+              <button 
+                onClick={() => {}} // Additional search logic could go here
+                className="flex items-center justify-center gap-2 px-6 py-2.5 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-xl shadow-md transition-colors w-full md:w-auto"
+              >
+                <Search className="w-4 h-4" /> Search
+              </button>
+              
+              {hasActiveFilters && (
+                <button
+                  onClick={clearAllFilters}
+                  className="text-sm text-secondary-500 hover:text-primary-600 font-medium whitespace-nowrap"
+                >
+                  Clear Filters
+                </button>
+              )}
+            </div>
+            
+            </div>
           </div>
-        </aside>
+        </div>
 
         {/* Main Content Area */}
         <div className="flex-1">
@@ -265,7 +272,7 @@ export default function Catalog() {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
               {courses.map((course) => (
                 <CourseCard key={course.id} course={course} />
               ))}

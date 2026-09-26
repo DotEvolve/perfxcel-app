@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { useTaxonomies } from "../hooks/useTaxonomies";
 import { useCourses } from "../hooks/useCourses";
@@ -13,6 +14,8 @@ import {
   Star,
   StarHalf,
   ArrowRight,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import type { TaxonomyItem } from "../types/course";
 
@@ -32,8 +35,17 @@ export default function Home() {
   const { taxonomies } = useTaxonomies();
   const categories = taxonomies?.categories || [];
 
-  // Fetch up to 6 public courses for the featured section
+  // Fetch public courses for the featured section
   const { courses: featuredCourses, loading: featuredLoading } = useCourses({});
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const scroll = (direction: 'left' | 'right') => {
+    if (scrollRef.current) {
+      const scrollAmount = scrollRef.current.offsetWidth * 0.8;
+      scrollRef.current.scrollBy({ left: direction === 'left' ? -scrollAmount : scrollAmount, behavior: 'smooth' });
+    }
+  };
 
   return (
     <div>
@@ -134,10 +146,38 @@ export default function Home() {
               No featured courses available right now.
             </p>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {featuredCourses.slice(0, 6).map((course) => (
-                <CourseCard key={course.id} course={course} />
-              ))}
+            <div className="relative group">
+              <button 
+                onClick={() => scroll('left')}
+                className="absolute -left-5 top-[40%] -translate-y-1/2 z-10 bg-white/90 shadow-lg rounded-full p-2 text-primary-600 hover:bg-primary-50 opacity-0 group-hover:opacity-100 transition-opacity hidden md:flex items-center justify-center border border-gray-100"
+                aria-label="Scroll left"
+              >
+                <ChevronLeft className="w-6 h-6" />
+              </button>
+              
+              <div 
+                ref={scrollRef}
+                className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-8 scroll-smooth"
+                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              >
+                {/* To hide scrollbar on webkit, usually done via css, but inline helps for firefox/ie */}
+                <style>{`
+                  div::-webkit-scrollbar { display: none; }
+                `}</style>
+                {featuredCourses.map((course) => (
+                  <div key={course.id} className="snap-start shrink-0 w-full sm:w-[calc(50%-12px)] md:w-[calc(33.333%-16px)] lg:w-[calc(25%-18px)] xl:w-[calc(20%-19.2px)]">
+                    <CourseCard course={course} />
+                  </div>
+                ))}
+              </div>
+
+              <button 
+                onClick={() => scroll('right')}
+                className="absolute -right-5 top-[40%] -translate-y-1/2 z-10 bg-white/90 shadow-lg rounded-full p-2 text-primary-600 hover:bg-primary-50 opacity-0 group-hover:opacity-100 transition-opacity hidden md:flex items-center justify-center border border-gray-100"
+                aria-label="Scroll right"
+              >
+                <ChevronRight className="w-6 h-6" />
+              </button>
             </div>
           )}
 
