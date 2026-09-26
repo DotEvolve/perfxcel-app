@@ -12,9 +12,9 @@ export default function Footer() {
         <div>
           <Link to="/" className="flex items-center space-x-3 mb-6">
             <img
-              src="/logo.png"
+              src="/PerfXcel.png"
               alt="PerfXcel Logo"
-              className="h-14 w-14 object-contain drop-shadow-md"
+              className="h-20 w-20 object-contain drop-shadow-md bg-white rounded-full p-2"
             />
             <div className="flex flex-col justify-center mt-1">
               <span

@@ -28,7 +28,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="glass-panel sticky top-0 z-50 h-20">
+    <nav className="glass-panel sticky top-0 z-50 h-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
         <div className="flex justify-between items-center h-full">
           {/* Logo */}
@@ -38,9 +38,9 @@ export default function Navbar() {
             className="flex items-center space-x-3"
           >
             <img
-              src="/logo.png"
+              src="/PerfXcel.png"
               alt="PerfXcel Logo"
-              className="h-16 w-16 object-contain drop-shadow-md"
+              className="h-20 w-20 object-contain drop-shadow-md"
             />
             <div className="flex flex-col justify-center mt-1">
               <span
@@ -288,7 +288,7 @@ export default function Navbar() {
 
       {/* Mobile Drawer */}
       {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-20 left-0 w-full bg-white shadow-xl border-t border-gray-100 h-[calc(100vh-5rem)] overflow-y-auto">
+        <div className="md:hidden absolute top-24 left-0 w-full bg-white shadow-xl border-t border-gray-100 h-[calc(100vh-6rem)] overflow-y-auto">
           <div className="px-4 pt-2 pb-6 space-y-1">
             <Link
               to="/"
