@@ -10,18 +10,19 @@ export default function CourseCard({ course }: { course: Course }) {
       className="glass-panel rounded-2xl overflow-hidden hover-lift cursor-pointer flex flex-col h-full bg-white transition-all duration-300"
     >
       {/* Course image or gradient accent bar */}
-      {course.image_url ? (
-        <div className="h-44 w-full overflow-hidden bg-secondary-100">
-          <img
-            src={course.image_url}
-            alt={course.title}
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-            loading="lazy"
-          />
-        </div>
-      ) : (
-        <div className="h-1.5 bg-gradient-to-r from-primary-500 to-primary-700" />
-      )}
+      <div className="h-44 w-full overflow-hidden bg-secondary-100 relative group-hover:opacity-90 transition-opacity">
+        <img
+          src={course.image_url || `https://picsum.photos/seed/${course.id}/800/400`}
+          alt={course.title}
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          loading="lazy"
+        />
+        {!course.image_url && (
+          <div className="absolute top-2 right-2 bg-black/50 text-white text-[10px] px-2 py-0.5 rounded backdrop-blur-sm">
+            Demo Image
+          </div>
+        )}
+      </div>
 
       <div className="p-6 flex flex-col flex-1">
         <div className="flex flex-wrap gap-2 mb-3">

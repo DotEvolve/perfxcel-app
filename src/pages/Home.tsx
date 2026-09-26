@@ -165,7 +165,7 @@ export default function Home() {
                   div::-webkit-scrollbar { display: none; }
                 `}</style>
                 {featuredCourses.map((course) => (
-                  <div key={course.id} className="snap-start shrink-0 w-full sm:w-[calc(50%-12px)] md:w-[calc(33.333%-16px)] lg:w-[calc(25%-18px)] xl:w-[calc(20%-19.2px)]">
+                  <div key={course.id} className="snap-start shrink-0 w-full sm:w-[calc(50%-12px)] md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] xl:w-[calc(25%-18px)]">
                     <CourseCard course={course} />
                   </div>
                 ))}
