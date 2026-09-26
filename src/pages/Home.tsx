@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useTaxonomies } from "../hooks/useTaxonomies";
 import { useCourses } from "../hooks/useCourses";
@@ -44,10 +44,34 @@ export default function Home() {
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
-      const scrollAmount = scrollRef.current.offsetWidth * 0.8;
-      scrollRef.current.scrollBy({ left: direction === 'left' ? -scrollAmount : scrollAmount, behavior: 'smooth' });
+      const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+      const scrollAmount = clientWidth * 0.8;
+      
+      if (direction === 'right') {
+        if (scrollLeft + clientWidth >= scrollWidth - 10) {
+          scrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+          scrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        }
+      } else {
+        if (scrollLeft <= 10) {
+          scrollRef.current.scrollTo({ left: scrollWidth, behavior: 'smooth' });
+        } else {
+          scrollRef.current.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+        }
+      }
     }
   };
+
+  useEffect(() => {
+    if (featuredCourses.length === 0) return;
+    
+    const interval = setInterval(() => {
+      scroll('right');
+    }, 4000);
+    
+    return () => clearInterval(interval);
+  }, [featuredCourses]);
 
   return (
     <div>
