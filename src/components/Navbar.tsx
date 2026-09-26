@@ -252,6 +252,15 @@ export default function Navbar() {
                 About
               </Link>
             </li>
+            <li>
+              <Link
+                to="/contact"
+                onClick={handleLinkClick}
+                className="text-secondary-800 hover:text-primary-600 font-medium transition-colors"
+              >
+                Contact Us
+              </Link>
+            </li>
           </ul>
 
           {/* CTA & Mobile Toggle */}
@@ -349,6 +358,14 @@ export default function Navbar() {
               className="block px-3 py-4 text-base font-bold text-secondary-900 border-b border-gray-100"
             >
               About
+            </Link>
+
+            <Link
+              to="/contact"
+              onClick={handleLinkClick}
+              className="block px-3 py-4 text-base font-bold text-secondary-900 border-b border-gray-100"
+            >
+              Contact Us
             </Link>
 
             <div className="pt-6 px-3">
