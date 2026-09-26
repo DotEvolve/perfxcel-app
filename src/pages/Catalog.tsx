@@ -9,19 +9,40 @@ export default function Catalog() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { taxonomies, loading: taxLoading } = useTaxonomies();
 
-  const category_id = searchParams.get("category") || undefined;
-  const city_id = searchParams.get("location") || undefined;
-  const association_id = searchParams.get("association") || undefined;
-  const delivery = searchParams.get("delivery") || undefined; // Currently unused in API, but kept for future/UI
+  const slugify = (text: string) => 
+    text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
+
+  const findTaxonomyId = (list: any[] | undefined, val: string | undefined) => {
+    if (!list || !val) return undefined;
+    return list.find(c => c.id === val || slugify(c.name) === val)?.id;
+  };
+
+  const getTaxonomySlug = (list: any[] | undefined, val: string | undefined) => {
+    if (!list || !val) return undefined;
+    const item = list.find(c => c.id === val || slugify(c.name) === val);
+    return item ? slugify(item.name) : val;
+  };
+
+  const categorySlug = searchParams.get("category") || undefined;
+  const citySlug = searchParams.get("location") || undefined;
+  const associationSlug = searchParams.get("association") || undefined;
+  const deliverySlug = searchParams.get("delivery") || undefined;
+
+  const category_id = findTaxonomyId(taxonomies?.categories, categorySlug);
+  const city_id = findTaxonomyId(taxonomies?.cities, citySlug);
+  const association_id = findTaxonomyId(taxonomies?.associations, associationSlug);
+  const delivery_mode_id = findTaxonomyId(taxonomies?.delivery_modes, deliverySlug);
 
   const filters: CourseFilters = {
     category_id,
     city_id,
     association_id,
-    delivery_mode_id: delivery,
+    delivery_mode_id,
   };
 
-  const { courses, loading: coursesLoading } = useCourses(filters);
+  const hasSlugsInUrl = Boolean(categorySlug || citySlug || associationSlug || deliverySlug);
+  const shouldSkip = hasSlugsInUrl && taxLoading;
+  const { courses, loading: coursesLoading } = useCourses(filters, shouldSkip);
 
   const updateFilter = (key: string, value: string) => {
     const newParams = new URLSearchParams(searchParams);
@@ -37,7 +58,7 @@ export default function Catalog() {
     setSearchParams(new URLSearchParams());
   };
 
-  const hasActiveFilters = category_id || city_id || association_id || delivery;
+  const hasActiveFilters = categorySlug || citySlug || associationSlug || deliverySlug;
 
   const getCategoryName = (id: string) =>
     taxonomies?.categories.find((c) => c.id === id)?.name;
@@ -82,14 +103,14 @@ export default function Catalog() {
                   Category
                 </label>
                 <select
-                  value={category_id || ""}
+                  value={getTaxonomySlug(taxonomies?.categories, categorySlug) || ""}
                   onChange={(e) => updateFilter("category", e.target.value)}
                   className="w-full bg-secondary-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none transition-shadow text-secondary-900"
                   disabled={taxLoading}
                 >
                   <option value="">All Categories</option>
                   {taxonomies?.categories.map((c) => (
-                     <option key={c.id} value={c.id}>
+                     <option key={c.id} value={slugify(c.name)}>
                       {c.name}
                     </option>
                   ))}
@@ -101,14 +122,14 @@ export default function Catalog() {
                   Location
                 </label>
                 <select
-                  value={city_id || ""}
+                  value={getTaxonomySlug(taxonomies?.cities, citySlug) || ""}
                   onChange={(e) => updateFilter("location", e.target.value)}
                   className="w-full bg-secondary-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none transition-shadow text-secondary-900"
                   disabled={taxLoading}
                 >
                   <option value="">Any Location</option>
                   {taxonomies?.cities.map((c) => (
-                    <option key={c.id} value={c.id}>
+                    <option key={c.id} value={slugify(c.name)}>
                       {c.name}
                     </option>
                   ))}
@@ -120,14 +141,14 @@ export default function Catalog() {
                   Association
                 </label>
                 <select
-                  value={association_id || ""}
+                  value={getTaxonomySlug(taxonomies?.associations, associationSlug) || ""}
                   onChange={(e) => updateFilter("association", e.target.value)}
                   className="w-full bg-secondary-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none transition-shadow text-secondary-900"
                   disabled={taxLoading}
                 >
                   <option value="">Any Association</option>
                   {taxonomies?.associations.map((c) => (
-                    <option key={c.id} value={c.id}>
+                    <option key={c.id} value={slugify(c.name)}>
                       {c.name}
                     </option>
                   ))}
@@ -139,13 +160,14 @@ export default function Catalog() {
                   Delivery Type
                 </label>
                 <select
-                  value={delivery || ""}
+                  value={getTaxonomySlug(taxonomies?.delivery_modes, deliverySlug) || ""}
                   onChange={(e) => updateFilter("delivery", e.target.value)}
                   className="w-full bg-secondary-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none transition-shadow text-secondary-900"
+                  disabled={taxLoading}
                 >
                   <option value="">All Methods</option>
                   {taxonomies?.delivery_modes.map((c) => (
-                    <option key={c.id} value={c.id}>
+                    <option key={c.id} value={slugify(c.name)}>
                       {c.name}
                     </option>
                   ))}
@@ -180,10 +202,10 @@ export default function Catalog() {
           {/* Active Filter Chips */}
           {hasActiveFilters && (
             <div className="flex flex-wrap gap-2 mb-6">
-              {category_id && (
+              {categorySlug && (
                 <div className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-primary-50 text-primary-700 border border-primary-100">
                   <span className="font-semibold mr-1">Category:</span>{" "}
-                  {getCategoryName(category_id) || "Loading..."}
+                  {getCategoryName(category_id || "") || "Loading..."}
                   <button
                     onClick={() => updateFilter("category", "")}
                     className="ml-2 hover:text-primary-900"
@@ -192,10 +214,10 @@ export default function Catalog() {
                   </button>
                 </div>
               )}
-              {city_id && (
+              {citySlug && (
                 <div className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-secondary-100 text-secondary-800 border border-gray-200">
                   <span className="font-semibold mr-1">Location:</span>{" "}
-                  {getLocationName(city_id) || "Loading..."}
+                  {getLocationName(city_id || "") || "Loading..."}
                   <button
                     onClick={() => updateFilter("location", "")}
                     className="ml-2 hover:text-secondary-900"
@@ -204,10 +226,10 @@ export default function Catalog() {
                   </button>
                 </div>
               )}
-              {association_id && (
+              {associationSlug && (
                 <div className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-50 text-blue-700 border border-blue-100">
                   <span className="font-semibold mr-1">Assoc:</span>{" "}
-                  {getAssociationName(association_id) || "Loading..."}
+                  {getAssociationName(association_id || "") || "Loading..."}
                   <button
                     onClick={() => updateFilter("association", "")}
                     className="ml-2 hover:text-blue-900"
@@ -216,10 +238,10 @@ export default function Catalog() {
                   </button>
                 </div>
               )}
-              {delivery && (
+              {deliverySlug && (
                 <div className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-accent-50 text-accent-700 border border-accent-100">
                   <span className="font-semibold mr-1">Delivery:</span>{" "}
-                  {getDeliveryName(delivery) || "Loading..."}
+                  {getDeliveryName(delivery_mode_id || "") || "Loading..."}
                   <button
                     onClick={() => updateFilter("delivery", "")}
                     className="ml-2 hover:text-accent-900"
