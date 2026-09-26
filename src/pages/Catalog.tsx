@@ -23,12 +23,6 @@ export default function Catalog() {
     return ids.length > 0 ? ids : undefined;
   };
 
-  const getTaxonomySlug = (list: any[] | undefined, val: string | undefined) => {
-    if (!list || !val) return undefined;
-    const item = list.find(c => c.id === val || slugify(c.name) === val);
-    return item ? slugify(item.name) : val;
-  };
-
   const categorySlugs = searchParams.getAll("category");
   const citySlugs = searchParams.getAll("location");
   const associationSlugs = searchParams.getAll("association");
@@ -112,195 +106,194 @@ export default function Catalog() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row gap-8 pb-20">
-        {/* Sidebar Filters */}
-        <div className="w-full md:w-64 lg:w-72 flex-shrink-0">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-8 pb-20">
+        {/* Top Bar Filters */}
+        <div className="w-full">
           <div className="glass-panel p-6 rounded-2xl shadow-sm border border-gray-100">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-bold text-secondary-900">Filters</h3>
+            {/* Search + Filters Row */}
+            <div className="flex flex-col lg:flex-row items-start lg:items-end gap-4">
+              {/* Search */}
+              <div className="flex-1 min-w-[200px] w-full lg:w-auto">
+                <label className="block text-sm font-bold text-secondary-800 mb-2">
+                  Search
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Search courses by name..."
+                    value={searchStr || ""}
+                    onChange={(e) => updateFilter("search", e.target.value)}
+                    className="w-full bg-secondary-50 border border-gray-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none transition-shadow text-secondary-900"
+                  />
+                  <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                </div>
+              </div>
+
+              {/* Multi-Select Dropdowns */}
+              <MultiSelect
+                label="Category"
+                options={catOptions}
+                selectedValues={categorySlugs}
+                onChange={(vals) => updateMultiFilter("category", vals)}
+                disabled={taxLoading}
+              />
+
+              <MultiSelect
+                label="Location"
+                options={cityOptions}
+                selectedValues={citySlugs}
+                onChange={(vals) => updateMultiFilter("location", vals)}
+                disabled={taxLoading}
+              />
+
+              <MultiSelect
+                label="Association"
+                options={assocOptions}
+                selectedValues={associationSlugs}
+                onChange={(vals) => updateMultiFilter("association", vals)}
+                disabled={taxLoading}
+              />
+
+              <MultiSelect
+                label="Delivery Type"
+                options={deliveryOptions}
+                selectedValues={deliverySlugs}
+                onChange={(vals) => updateMultiFilter("delivery", vals)}
+                disabled={taxLoading}
+              />
+
+              {/* Clear Filters */}
               {hasActiveFilters && (
                 <button
                   onClick={clearAllFilters}
-                  className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+                  className="flex items-center gap-1 px-4 py-2.5 text-sm text-primary-600 hover:text-primary-700 font-bold whitespace-nowrap bg-primary-50 hover:bg-primary-100 rounded-xl transition-colors"
                 >
-                  Clear All
+                  <X className="w-4 h-4" /> Clear
                 </button>
               )}
             </div>
+          </div>
+        </div>
 
-            <div className="mb-6">
-              <label className="block text-sm font-bold text-secondary-800 mb-2">
-                Search
-              </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Course name..."
-                  value={searchStr || ""}
-                  onChange={(e) => updateFilter("search", e.target.value)}
-                  className="w-full bg-secondary-50 border border-gray-200 rounded-xl pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none transition-shadow text-secondary-900"
-                />
-                <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+        {/* Active Filter Chips */}
+        {hasActiveFilters && (
+          <div className="flex flex-wrap gap-2">
+            {categorySlugs.map(slug => (
+              <div key={`cat-${slug}`} className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-primary-50 text-primary-700 border border-primary-100">
+                <span className="font-semibold mr-1">Category:</span>{" "}
+                {getCategoryName(findTaxonomyIds(taxonomies?.categories, [slug])?.[0] || "") || slug}
+                <button
+                  onClick={() => updateMultiFilter("category", categorySlugs.filter(s => s !== slug))}
+                  className="ml-2 hover:text-primary-900"
+                >
+                  <X className="w-3 h-3" />
+                </button>
               </div>
-            </div>
+            ))}
+            {citySlugs.map(slug => (
+              <div key={`city-${slug}`} className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-secondary-100 text-secondary-800 border border-gray-200">
+                <span className="font-semibold mr-1">Location:</span>{" "}
+                {getLocationName(findTaxonomyIds(taxonomies?.cities, [slug])?.[0] || "") || slug}
+                <button
+                  onClick={() => updateMultiFilter("location", citySlugs.filter(s => s !== slug))}
+                  className="ml-2 hover:text-secondary-900"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </div>
+            ))}
+            {associationSlugs.map(slug => (
+              <div key={`assoc-${slug}`} className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-50 text-blue-700 border border-blue-100">
+                <span className="font-semibold mr-1">Assoc:</span>{" "}
+                {getAssociationName(findTaxonomyIds(taxonomies?.associations, [slug])?.[0] || "") || slug}
+                <button
+                  onClick={() => updateMultiFilter("association", associationSlugs.filter(s => s !== slug))}
+                  className="ml-2 hover:text-blue-900"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </div>
+            ))}
+            {deliverySlugs.map(slug => (
+              <div key={`del-${slug}`} className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-accent-50 text-accent-700 border border-accent-100">
+                <span className="font-semibold mr-1">Delivery:</span>{" "}
+                {getDeliveryName(findTaxonomyIds(taxonomies?.delivery_modes, [slug])?.[0] || "") || slug}
+                <button
+                  onClick={() => updateMultiFilter("delivery", deliverySlugs.filter(s => s !== slug))}
+                  className="ml-2 hover:text-accent-900"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </div>
+            ))}
+            {searchStr && (
+              <div className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-gray-100 text-gray-800 border border-gray-200">
+                <span className="font-semibold mr-1">Search:</span>{" "}
+                "{searchStr}"
+                <button
+                  onClick={() => updateFilter("search", "")}
+                  className="ml-2 hover:text-gray-900"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </div>
+            )}
+          </div>
+        )}
 
-            <SidebarCheckboxGroup
-              label="Category"
-              options={catOptions}
-              selectedValues={categorySlugs}
-              onChange={(vals) => updateMultiFilter("category", vals)}
-              disabled={taxLoading}
-            />
-            
-            <SidebarCheckboxGroup
-              label="Location"
-              options={cityOptions}
-              selectedValues={citySlugs}
-              onChange={(vals) => updateMultiFilter("location", vals)}
-              disabled={taxLoading}
-            />
-
-            <SidebarCheckboxGroup
-              label="Association"
-              options={assocOptions}
-              selectedValues={associationSlugs}
-              onChange={(vals) => updateMultiFilter("association", vals)}
-              disabled={taxLoading}
-            />
-
-            <SidebarCheckboxGroup
-              label="Delivery Type"
-              options={deliveryOptions}
-              selectedValues={deliverySlugs}
-              onChange={(vals) => updateMultiFilter("delivery", vals)}
-              disabled={taxLoading}
-            />
+        {/* Results Count Bar */}
+        <div className="flex items-center justify-between pb-4 border-b border-gray-200">
+          <h2 className="text-xl font-bold text-secondary-900">
+            {coursesLoading
+              ? "Searching..."
+              : `${courses.length} courses found`}
+          </h2>
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-secondary-500 font-medium">
+              Sort by:
+            </span>
+            <select className="bg-transparent text-sm font-bold text-secondary-900 focus:outline-none cursor-pointer">
+              <option>Recommended</option>
+              <option>Newest First</option>
+              <option>A-Z</option>
+            </select>
           </div>
         </div>
 
-        {/* Main Content Area */}
-        <div className="flex-1">
-
-          {/* Active Filter Chips */}
-          {hasActiveFilters && (
-            <div className="flex flex-wrap gap-2 mb-6">
-              {categorySlugs.map(slug => (
-                <div key={`cat-${slug}`} className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-primary-50 text-primary-700 border border-primary-100">
-                  <span className="font-semibold mr-1">Category:</span>{" "}
-                  {getCategoryName(findTaxonomyIds(taxonomies?.categories, [slug])?.[0] || "") || slug}
-                  <button
-                    onClick={() => updateMultiFilter("category", categorySlugs.filter(s => s !== slug))}
-                    className="ml-2 hover:text-primary-900"
-                  >
-                    <X className="w-3 h-3" />
-                  </button>
-                </div>
-              ))}
-              {citySlugs.map(slug => (
-                <div key={`city-${slug}`} className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-secondary-100 text-secondary-800 border border-gray-200">
-                  <span className="font-semibold mr-1">Location:</span>{" "}
-                  {getLocationName(findTaxonomyIds(taxonomies?.cities, [slug])?.[0] || "") || slug}
-                  <button
-                    onClick={() => updateMultiFilter("location", citySlugs.filter(s => s !== slug))}
-                    className="ml-2 hover:text-secondary-900"
-                  >
-                    <X className="w-3 h-3" />
-                  </button>
-                </div>
-              ))}
-              {associationSlugs.map(slug => (
-                <div key={`assoc-${slug}`} className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-50 text-blue-700 border border-blue-100">
-                  <span className="font-semibold mr-1">Assoc:</span>{" "}
-                  {getAssociationName(findTaxonomyIds(taxonomies?.associations, [slug])?.[0] || "") || slug}
-                  <button
-                    onClick={() => updateMultiFilter("association", associationSlugs.filter(s => s !== slug))}
-                    className="ml-2 hover:text-blue-900"
-                  >
-                    <X className="w-3 h-3" />
-                  </button>
-                </div>
-              ))}
-              {deliverySlugs.map(slug => (
-                <div key={`del-${slug}`} className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-accent-50 text-accent-700 border border-accent-100">
-                  <span className="font-semibold mr-1">Delivery:</span>{" "}
-                  {getDeliveryName(findTaxonomyIds(taxonomies?.delivery_modes, [slug])?.[0] || "") || slug}
-                  <button
-                    onClick={() => updateMultiFilter("delivery", deliverySlugs.filter(s => s !== slug))}
-                    className="ml-2 hover:text-accent-900"
-                  >
-                    <X className="w-3 h-3" />
-                  </button>
-                </div>
-              ))}
-              {searchStr && (
-                <div className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-gray-100 text-gray-800 border border-gray-200">
-                  <span className="font-semibold mr-1">Search:</span>{" "}
-                  "{searchStr}"
-                  <button
-                    onClick={() => updateFilter("search", "")}
-                    className="ml-2 hover:text-gray-900"
-                  >
-                    <X className="w-3 h-3" />
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Results Count Bar */}
-          <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-200">
-            <h2 className="text-xl font-bold text-secondary-900">
-              {coursesLoading
-                ? "Searching..."
-                : `${courses.length} courses found`}
-            </h2>
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-secondary-500 font-medium">
-                Sort by:
-              </span>
-              <select className="bg-transparent text-sm font-bold text-secondary-900 focus:outline-none cursor-pointer">
-                <option>Recommended</option>
-                <option>Newest First</option>
-                <option>A-Z</option>
-              </select>
-            </div>
+        {/* Grid */}
+        {coursesLoading ? (
+          <div className="flex justify-center py-32">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
           </div>
-
-          {/* Grid */}
-          {coursesLoading ? (
-            <div className="flex justify-center py-32">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
-            </div>
-          ) : courses.length === 0 ? (
-            <div className="glass-panel text-center py-20 rounded-2xl border border-gray-100">
-              <Search className="w-12 h-12 text-secondary-300 mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-secondary-900 mb-2">
-                No courses found
-              </h3>
-              <p className="text-secondary-500">
-                Try adjusting your filters or search criteria.
-              </p>
-              <button
-                onClick={clearAllFilters}
-                className="mt-6 text-primary-600 font-bold hover:text-primary-700"
-              >
-                Clear all filters
-              </button>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {courses.map((course) => (
-                <CourseCard key={course.id} course={course} />
-              ))}
-            </div>
-          )}
-        </div>
+        ) : courses.length === 0 ? (
+          <div className="glass-panel text-center py-20 rounded-2xl border border-gray-100">
+            <Search className="w-12 h-12 text-secondary-300 mx-auto mb-4" />
+            <h3 className="text-xl font-bold text-secondary-900 mb-2">
+              No courses found
+            </h3>
+            <p className="text-secondary-500">
+              Try adjusting your filters or search criteria.
+            </p>
+            <button
+              onClick={clearAllFilters}
+              className="mt-6 text-primary-600 font-bold hover:text-primary-700"
+            >
+              Clear all filters
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {courses.map((course) => (
+              <CourseCard key={course.id} course={course} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
-function SidebarCheckboxGroup({
+function MultiSelect({
   label,
   options,
   selectedValues,
@@ -313,6 +306,19 @@ function SidebarCheckboxGroup({
   onChange: (values: string[]) => void;
   disabled?: boolean;
 }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
   const toggle = (val: string) => {
     if (selectedValues.includes(val)) {
       onChange(selectedValues.filter(v => v !== val));
@@ -321,34 +327,51 @@ function SidebarCheckboxGroup({
     }
   };
 
+  const selectedLabels = options
+    .filter(o => selectedValues.includes(o.value))
+    .map(o => o.label);
+
   return (
-    <div className="mb-6 last:mb-0">
-      <label className="block text-sm font-bold text-secondary-800 mb-3">
+    <div className="relative flex-1 min-w-[160px]" ref={ref}>
+      <label className="block text-sm font-bold text-secondary-800 mb-2">
         {label}
       </label>
-      <div className="space-y-2 max-h-48 overflow-y-auto pr-2">
-        {options.map((opt) => (
-          <label
-            key={opt.value}
-            className={`flex items-start cursor-pointer group ${disabled ? 'opacity-50 pointer-events-none' : ''}`}
-          >
-            <div className="flex items-center h-5">
+      <div
+        className={`w-full bg-secondary-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm flex items-center justify-between transition-shadow text-secondary-900 ${
+          disabled ? "opacity-50 cursor-not-allowed" : "hover:bg-secondary-100 cursor-pointer"
+        }`}
+        onClick={() => !disabled && setOpen(!open)}
+      >
+        <div className="truncate pr-2 select-none">
+          {selectedLabels.length === 0
+            ? "Any"
+            : selectedLabels.length === 1
+            ? selectedLabels[0]
+            : `${selectedLabels.length} selected`}
+        </div>
+        <ChevronDown className={`w-4 h-4 text-gray-500 shrink-0 transition-transform ${open ? "rotate-180" : ""}`} />
+      </div>
+
+      {open && (
+        <div className="absolute z-50 top-full left-0 right-0 mt-2 bg-white border border-gray-100 rounded-xl shadow-xl max-h-60 overflow-y-auto">
+          {options.map((opt) => (
+            <label
+              key={opt.value}
+              className="flex items-center px-4 py-2.5 hover:bg-primary-50 cursor-pointer border-b border-gray-50 last:border-0 transition-colors"
+            >
               <input
                 type="checkbox"
                 checked={selectedValues.includes(opt.value)}
                 onChange={() => toggle(opt.value)}
-                disabled={disabled}
-                className="w-4 h-4 text-primary-600 rounded border-gray-300 focus:ring-primary-500"
+                className="w-4 h-4 text-primary-600 rounded border-gray-300 focus:ring-primary-500 mr-3"
               />
-            </div>
-            <div className="ml-3 text-sm">
-              <span className="font-medium text-secondary-700 group-hover:text-primary-600 transition-colors">
+              <span className="text-sm font-medium text-secondary-800">
                 {opt.label}
               </span>
-            </div>
-          </label>
-        ))}
-      </div>
+            </label>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
