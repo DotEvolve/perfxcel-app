@@ -112,85 +112,75 @@ export default function Catalog() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-8 pb-20">
-        {/* Top Bar Filters */}
-        <div className="w-full">
-          <div className="glass-panel p-6 rounded-2xl shadow-sm border border-gray-100 mb-8">
-            <div className="flex flex-col md:flex-row items-start md:items-end gap-4">
-              <div className="flex-1 w-full flex flex-col sm:flex-row flex-wrap gap-4">
-              <div className="flex-1 min-w-[200px]">
-                <label className="block text-sm font-bold text-secondary-800 mb-2">
-                  Search
-                </label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    placeholder="Course name..."
-                    value={searchStr || ""}
-                    onChange={(e) => updateFilter("search", e.target.value)}
-                    className="w-full bg-secondary-50 border border-gray-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none transition-shadow text-secondary-900"
-                  />
-                  <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                </div>
-              </div>
-
-              <MultiSelect
-                label="Category"
-                options={catOptions}
-                selectedValues={categorySlugs}
-                onChange={(vals) => updateMultiFilter("category", vals)}
-                disabled={taxLoading}
-              />
-              
-              <MultiSelect
-                label="Location"
-                options={cityOptions}
-                selectedValues={citySlugs}
-                onChange={(vals) => updateMultiFilter("location", vals)}
-                disabled={taxLoading}
-              />
-
-              <MultiSelect
-                label="Association"
-                options={assocOptions}
-                selectedValues={associationSlugs}
-                onChange={(vals) => updateMultiFilter("association", vals)}
-                disabled={taxLoading}
-              />
-
-              <MultiSelect
-                label="Delivery Type"
-                options={deliveryOptions}
-                selectedValues={deliverySlugs}
-                onChange={(vals) => updateMultiFilter("delivery", vals)}
-                disabled={taxLoading}
-              />
-            </div>
-
-            <div className="flex items-center gap-4 w-full md:w-auto mt-4 md:mt-0">
-              <button 
-                onClick={() => {}} // Additional search logic could go here
-                className="flex items-center justify-center gap-2 px-6 py-2.5 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-xl shadow-md transition-colors w-full md:w-auto"
-              >
-                <Search className="w-4 h-4" /> Search
-              </button>
-              
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row gap-8 pb-20">
+        {/* Sidebar Filters */}
+        <div className="w-full md:w-64 lg:w-72 flex-shrink-0">
+          <div className="glass-panel p-6 rounded-2xl shadow-sm border border-gray-100">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-lg font-bold text-secondary-900">Filters</h3>
               {hasActiveFilters && (
                 <button
                   onClick={clearAllFilters}
-                  className="text-sm text-secondary-500 hover:text-primary-600 font-medium whitespace-nowrap"
+                  className="text-sm text-primary-600 hover:text-primary-700 font-medium"
                 >
-                  Clear Filters
+                  Clear All
                 </button>
               )}
             </div>
-            
+
+            <div className="mb-6">
+              <label className="block text-sm font-bold text-secondary-800 mb-2">
+                Search
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Course name..."
+                  value={searchStr || ""}
+                  onChange={(e) => updateFilter("search", e.target.value)}
+                  className="w-full bg-secondary-50 border border-gray-200 rounded-xl pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none transition-shadow text-secondary-900"
+                />
+                <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              </div>
             </div>
+
+            <SidebarCheckboxGroup
+              label="Category"
+              options={catOptions}
+              selectedValues={categorySlugs}
+              onChange={(vals) => updateMultiFilter("category", vals)}
+              disabled={taxLoading}
+            />
+            
+            <SidebarCheckboxGroup
+              label="Location"
+              options={cityOptions}
+              selectedValues={citySlugs}
+              onChange={(vals) => updateMultiFilter("location", vals)}
+              disabled={taxLoading}
+            />
+
+            <SidebarCheckboxGroup
+              label="Association"
+              options={assocOptions}
+              selectedValues={associationSlugs}
+              onChange={(vals) => updateMultiFilter("association", vals)}
+              disabled={taxLoading}
+            />
+
+            <SidebarCheckboxGroup
+              label="Delivery Type"
+              options={deliveryOptions}
+              selectedValues={deliverySlugs}
+              onChange={(vals) => updateMultiFilter("delivery", vals)}
+              disabled={taxLoading}
+            />
           </div>
         </div>
 
         {/* Main Content Area */}
         <div className="flex-1">
+
           {/* Active Filter Chips */}
           {hasActiveFilters && (
             <div className="flex flex-wrap gap-2 mb-6">
@@ -310,7 +300,7 @@ export default function Catalog() {
   );
 }
 
-function MultiSelect({
+function SidebarCheckboxGroup({
   label,
   options,
   selectedValues,
@@ -323,19 +313,6 @@ function MultiSelect({
   onChange: (values: string[]) => void;
   disabled?: boolean;
 }) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleClick = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, []);
-
   const toggle = (val: string) => {
     if (selectedValues.includes(val)) {
       onChange(selectedValues.filter(v => v !== val));
@@ -344,51 +321,34 @@ function MultiSelect({
     }
   };
 
-  const selectedLabels = options
-    .filter(o => selectedValues.includes(o.value))
-    .map(o => o.label);
-
   return (
-    <div className="relative flex-1 min-w-[200px]" ref={ref}>
-      <label className="block text-sm font-bold text-secondary-800 mb-2">
+    <div className="mb-6 last:mb-0">
+      <label className="block text-sm font-bold text-secondary-800 mb-3">
         {label}
       </label>
-      <div
-        className={`w-full bg-secondary-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm flex items-center justify-between transition-shadow text-secondary-900 ${
-          disabled ? "opacity-50 cursor-not-allowed" : "hover:bg-secondary-100 cursor-pointer"
-        }`}
-        onClick={() => !disabled && setOpen(!open)}
-      >
-        <div className="truncate pr-2 select-none">
-          {selectedLabels.length === 0
-            ? "Any"
-            : selectedLabels.length === 1
-            ? selectedLabels[0]
-            : `${selectedLabels.length} selected`}
-        </div>
-        <ChevronDown className="w-4 h-4 text-gray-500 shrink-0" />
-      </div>
-
-      {open && (
-        <div className="absolute z-50 top-full left-0 right-0 mt-2 bg-white border border-gray-100 rounded-xl shadow-xl max-h-60 overflow-y-auto">
-          {options.map((opt) => (
-            <label
-              key={opt.value}
-              className="flex items-center px-4 py-3 hover:bg-primary-50 cursor-pointer border-b border-gray-50 last:border-0"
-            >
+      <div className="space-y-2 max-h-48 overflow-y-auto pr-2">
+        {options.map((opt) => (
+          <label
+            key={opt.value}
+            className={`flex items-start cursor-pointer group ${disabled ? 'opacity-50 pointer-events-none' : ''}`}
+          >
+            <div className="flex items-center h-5">
               <input
                 type="checkbox"
                 checked={selectedValues.includes(opt.value)}
                 onChange={() => toggle(opt.value)}
-                className="w-4 h-4 text-primary-600 rounded border-gray-300 focus:ring-primary-500 mr-3"
+                disabled={disabled}
+                className="w-4 h-4 text-primary-600 rounded border-gray-300 focus:ring-primary-500"
               />
-              <span className="text-sm font-medium text-secondary-800">
+            </div>
+            <div className="ml-3 text-sm">
+              <span className="font-medium text-secondary-700 group-hover:text-primary-600 transition-colors">
                 {opt.label}
               </span>
-            </label>
-          ))}
-        </div>
-      )}
+            </div>
+          </label>
+        ))}
+      </div>
     </div>
   );
 }
