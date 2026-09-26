@@ -33,7 +33,11 @@ export default function RegisterInterestModal({
     }
     setSubmitting(true);
     try {
-      await submitCourseInterest(course.id, { ...formData, request_brochure: sendBrochure }, turnstileToken);
+      await submitCourseInterest(
+        course.id,
+        { ...formData, request_brochure: sendBrochure },
+        turnstileToken,
+      );
       setSuccess(true);
     } catch (err) {
       console.error(err);

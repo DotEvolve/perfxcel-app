@@ -83,7 +83,13 @@ export const getTaxonomies = async () => {
 
 export const submitCourseInterest = async (
   courseId: string,
-  data: { name: string; email: string; phone?: string; company?: string; request_brochure?: boolean },
+  data: {
+    name: string;
+    email: string;
+    phone?: string;
+    company?: string;
+    request_brochure?: boolean;
+  },
   turnstileToken: string,
 ) => {
   const response = await api.post(`/courses/${courseId}/interest`, {
@@ -127,5 +133,3 @@ export const requestTrainingPlan = async (data: {
   const response = await api.post("/training-plan/request", data);
   return response.data;
 };
-
-
