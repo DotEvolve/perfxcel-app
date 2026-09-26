@@ -139,7 +139,8 @@ export default function Footer() {
 
       <div className="border-t border-white/10 py-6 max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center text-sm">
         <p className="mb-4 md:mb-0">
-          &copy; 2026 PerfXcel by{" "}
+          &copy; {new Date().getFullYear()} PerfXcel. All rights reserved.{" "}
+          Powered by{" "}
           <a
             href="https://dotevolve.net"
             target="_blank"
@@ -148,7 +149,6 @@ export default function Footer() {
           >
             DotEvolve
           </a>
-          . All rights reserved.
         </p>
         <div className="flex gap-6">
           <Link to="/privacy" className="hover:text-white transition-colors">
