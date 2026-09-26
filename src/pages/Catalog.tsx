@@ -1,5 +1,6 @@
+import { useState, useRef, useEffect } from "react";
 import { useSearchParams, Link } from "react-router-dom";
-import { Search, ChevronRight, X } from "lucide-react";
+import { Search, ChevronRight, ChevronDown, X } from "lucide-react";
 import CourseCard from "../components/CourseCard";
 import { useTaxonomies } from "../hooks/useTaxonomies";
 import { useCourses } from "../hooks/useCourses";
@@ -12,9 +13,14 @@ export default function Catalog() {
   const slugify = (text: string) => 
     text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
 
-  const findTaxonomyId = (list: any[] | undefined, val: string | undefined) => {
-    if (!list || !val) return undefined;
-    return list.find(c => c.id === val || slugify(c.name) === val)?.id;
+  const findTaxonomyIds = (list: any[] | undefined, slugs: string[]) => {
+    if (!list || slugs.length === 0) return undefined;
+    const ids: string[] = [];
+    for (const slug of slugs) {
+      const item = list.find(c => c.id === slug || slugify(c.name) === slug);
+      if (item) ids.push(item.id);
+    }
+    return ids.length > 0 ? ids : undefined;
   };
 
   const getTaxonomySlug = (list: any[] | undefined, val: string | undefined) => {
@@ -23,26 +29,35 @@ export default function Catalog() {
     return item ? slugify(item.name) : val;
   };
 
-  const categorySlug = searchParams.get("category") || undefined;
-  const citySlug = searchParams.get("location") || undefined;
-  const associationSlug = searchParams.get("association") || undefined;
-  const deliverySlug = searchParams.get("delivery") || undefined;
+  const categorySlugs = searchParams.getAll("category");
+  const citySlugs = searchParams.getAll("location");
+  const associationSlugs = searchParams.getAll("association");
+  const deliverySlugs = searchParams.getAll("delivery");
+  const searchStr = searchParams.get("search") || undefined;
 
-  const category_id = findTaxonomyId(taxonomies?.categories, categorySlug);
-  const city_id = findTaxonomyId(taxonomies?.cities, citySlug);
-  const association_id = findTaxonomyId(taxonomies?.associations, associationSlug);
-  const delivery_mode_id = findTaxonomyId(taxonomies?.delivery_modes, deliverySlug);
+  const category_id = findTaxonomyIds(taxonomies?.categories, categorySlugs);
+  const city_id = findTaxonomyIds(taxonomies?.cities, citySlugs);
+  const association_id = findTaxonomyIds(taxonomies?.associations, associationSlugs);
+  const delivery_mode_id = findTaxonomyIds(taxonomies?.delivery_modes, deliverySlugs);
 
   const filters: CourseFilters = {
     category_id,
     city_id,
     association_id,
     delivery_mode_id,
+    search: searchStr,
   };
 
-  const hasSlugsInUrl = Boolean(categorySlug || citySlug || associationSlug || deliverySlug);
+  const hasSlugsInUrl = categorySlugs.length > 0 || citySlugs.length > 0 || associationSlugs.length > 0 || deliverySlugs.length > 0;
   const shouldSkip = hasSlugsInUrl && taxLoading;
   const { courses, loading: coursesLoading } = useCourses(filters, shouldSkip);
+
+  const updateMultiFilter = (key: string, values: string[]) => {
+    const newParams = new URLSearchParams(searchParams);
+    newParams.delete(key);
+    values.forEach(v => newParams.append(key, v));
+    setSearchParams(newParams);
+  };
 
   const updateFilter = (key: string, value: string) => {
     const newParams = new URLSearchParams(searchParams);
@@ -58,7 +73,7 @@ export default function Catalog() {
     setSearchParams(new URLSearchParams());
   };
 
-  const hasActiveFilters = categorySlug || citySlug || associationSlug || deliverySlug;
+  const hasActiveFilters = categorySlugs.length > 0 || citySlugs.length > 0 || associationSlugs.length > 0 || deliverySlugs.length > 0 || searchStr;
 
   const getCategoryName = (id: string) =>
     taxonomies?.categories.find((c) => c.id === id)?.name;
@@ -68,6 +83,11 @@ export default function Catalog() {
     taxonomies?.associations.find((c) => c.id === id)?.name;
   const getDeliveryName = (id: string) =>
     taxonomies?.delivery_modes.find((c) => c.id === id)?.name;
+
+  const catOptions = taxonomies?.categories.map(c => ({ value: slugify(c.name), label: c.name })) || [];
+  const cityOptions = taxonomies?.cities.map(c => ({ value: slugify(c.name), label: c.name })) || [];
+  const assocOptions = taxonomies?.associations.map(c => ({ value: slugify(c.name), label: c.name })) || [];
+  const deliveryOptions = taxonomies?.delivery_modes.map(c => ({ value: slugify(c.name), label: c.name })) || [];
 
   return (
     <div className="pt-8">
@@ -98,81 +118,53 @@ export default function Catalog() {
           <div className="glass-panel p-6 rounded-2xl shadow-sm border border-gray-100 mb-8">
             <div className="flex flex-col md:flex-row items-start md:items-end gap-4">
               <div className="flex-1 w-full flex flex-col sm:flex-row flex-wrap gap-4">
-              <div className="flex-1 min-w-[150px]">
+              <div className="flex-1 min-w-[200px]">
                 <label className="block text-sm font-bold text-secondary-800 mb-2">
-                  Category
+                  Search
                 </label>
-                <select
-                  value={getTaxonomySlug(taxonomies?.categories, categorySlug) || ""}
-                  onChange={(e) => updateFilter("category", e.target.value)}
-                  className="w-full bg-secondary-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none transition-shadow text-secondary-900"
-                  disabled={taxLoading}
-                >
-                  <option value="">All Categories</option>
-                  {taxonomies?.categories.map((c) => (
-                     <option key={c.id} value={slugify(c.name)}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Course name..."
+                    value={searchStr || ""}
+                    onChange={(e) => updateFilter("search", e.target.value)}
+                    className="w-full bg-secondary-50 border border-gray-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none transition-shadow text-secondary-900"
+                  />
+                  <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                </div>
               </div>
 
-              <div className="flex-1 min-w-[150px]">
-                <label className="block text-sm font-bold text-secondary-800 mb-2">
-                  Location
-                </label>
-                <select
-                  value={getTaxonomySlug(taxonomies?.cities, citySlug) || ""}
-                  onChange={(e) => updateFilter("location", e.target.value)}
-                  className="w-full bg-secondary-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none transition-shadow text-secondary-900"
-                  disabled={taxLoading}
-                >
-                  <option value="">Any Location</option>
-                  {taxonomies?.cities.map((c) => (
-                    <option key={c.id} value={slugify(c.name)}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <MultiSelect
+                label="Category"
+                options={catOptions}
+                selectedValues={categorySlugs}
+                onChange={(vals) => updateMultiFilter("category", vals)}
+                disabled={taxLoading}
+              />
+              
+              <MultiSelect
+                label="Location"
+                options={cityOptions}
+                selectedValues={citySlugs}
+                onChange={(vals) => updateMultiFilter("location", vals)}
+                disabled={taxLoading}
+              />
 
-              <div className="flex-1 min-w-[150px]">
-                <label className="block text-sm font-bold text-secondary-800 mb-2">
-                  Association
-                </label>
-                <select
-                  value={getTaxonomySlug(taxonomies?.associations, associationSlug) || ""}
-                  onChange={(e) => updateFilter("association", e.target.value)}
-                  className="w-full bg-secondary-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none transition-shadow text-secondary-900"
-                  disabled={taxLoading}
-                >
-                  <option value="">Any Association</option>
-                  {taxonomies?.associations.map((c) => (
-                    <option key={c.id} value={slugify(c.name)}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <MultiSelect
+                label="Association"
+                options={assocOptions}
+                selectedValues={associationSlugs}
+                onChange={(vals) => updateMultiFilter("association", vals)}
+                disabled={taxLoading}
+              />
 
-              <div className="flex-1 min-w-[150px]">
-                <label className="block text-sm font-bold text-secondary-800 mb-2">
-                  Delivery Type
-                </label>
-                <select
-                  value={getTaxonomySlug(taxonomies?.delivery_modes, deliverySlug) || ""}
-                  onChange={(e) => updateFilter("delivery", e.target.value)}
-                  className="w-full bg-secondary-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none transition-shadow text-secondary-900"
-                  disabled={taxLoading}
-                >
-                  <option value="">All Methods</option>
-                  {taxonomies?.delivery_modes.map((c) => (
-                    <option key={c.id} value={slugify(c.name)}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <MultiSelect
+                label="Delivery Type"
+                options={deliveryOptions}
+                selectedValues={deliverySlugs}
+                onChange={(vals) => updateMultiFilter("delivery", vals)}
+                disabled={taxLoading}
+              />
             </div>
 
             <div className="flex items-center gap-4 w-full md:w-auto mt-4 md:mt-0">
@@ -202,49 +194,61 @@ export default function Catalog() {
           {/* Active Filter Chips */}
           {hasActiveFilters && (
             <div className="flex flex-wrap gap-2 mb-6">
-              {categorySlug && (
-                <div className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-primary-50 text-primary-700 border border-primary-100">
+              {categorySlugs.map(slug => (
+                <div key={`cat-${slug}`} className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-primary-50 text-primary-700 border border-primary-100">
                   <span className="font-semibold mr-1">Category:</span>{" "}
-                  {getCategoryName(category_id || "") || "Loading..."}
+                  {getCategoryName(findTaxonomyIds(taxonomies?.categories, [slug])?.[0] || "") || slug}
                   <button
-                    onClick={() => updateFilter("category", "")}
+                    onClick={() => updateMultiFilter("category", categorySlugs.filter(s => s !== slug))}
                     className="ml-2 hover:text-primary-900"
                   >
                     <X className="w-3 h-3" />
                   </button>
                 </div>
-              )}
-              {citySlug && (
-                <div className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-secondary-100 text-secondary-800 border border-gray-200">
+              ))}
+              {citySlugs.map(slug => (
+                <div key={`city-${slug}`} className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-secondary-100 text-secondary-800 border border-gray-200">
                   <span className="font-semibold mr-1">Location:</span>{" "}
-                  {getLocationName(city_id || "") || "Loading..."}
+                  {getLocationName(findTaxonomyIds(taxonomies?.cities, [slug])?.[0] || "") || slug}
                   <button
-                    onClick={() => updateFilter("location", "")}
+                    onClick={() => updateMultiFilter("location", citySlugs.filter(s => s !== slug))}
                     className="ml-2 hover:text-secondary-900"
                   >
                     <X className="w-3 h-3" />
                   </button>
                 </div>
-              )}
-              {associationSlug && (
-                <div className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-50 text-blue-700 border border-blue-100">
+              ))}
+              {associationSlugs.map(slug => (
+                <div key={`assoc-${slug}`} className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-50 text-blue-700 border border-blue-100">
                   <span className="font-semibold mr-1">Assoc:</span>{" "}
-                  {getAssociationName(association_id || "") || "Loading..."}
+                  {getAssociationName(findTaxonomyIds(taxonomies?.associations, [slug])?.[0] || "") || slug}
                   <button
-                    onClick={() => updateFilter("association", "")}
+                    onClick={() => updateMultiFilter("association", associationSlugs.filter(s => s !== slug))}
                     className="ml-2 hover:text-blue-900"
                   >
                     <X className="w-3 h-3" />
                   </button>
                 </div>
-              )}
-              {deliverySlug && (
-                <div className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-accent-50 text-accent-700 border border-accent-100">
+              ))}
+              {deliverySlugs.map(slug => (
+                <div key={`del-${slug}`} className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-accent-50 text-accent-700 border border-accent-100">
                   <span className="font-semibold mr-1">Delivery:</span>{" "}
-                  {getDeliveryName(delivery_mode_id || "") || "Loading..."}
+                  {getDeliveryName(findTaxonomyIds(taxonomies?.delivery_modes, [slug])?.[0] || "") || slug}
                   <button
-                    onClick={() => updateFilter("delivery", "")}
+                    onClick={() => updateMultiFilter("delivery", deliverySlugs.filter(s => s !== slug))}
                     className="ml-2 hover:text-accent-900"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+              ))}
+              {searchStr && (
+                <div className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-gray-100 text-gray-800 border border-gray-200">
+                  <span className="font-semibold mr-1">Search:</span>{" "}
+                  "{searchStr}"
+                  <button
+                    onClick={() => updateFilter("search", "")}
+                    className="ml-2 hover:text-gray-900"
                   >
                     <X className="w-3 h-3" />
                   </button>
@@ -302,6 +306,89 @@ export default function Catalog() {
           )}
         </div>
       </div>
+    </div>
+  );
+}
+
+function MultiSelect({
+  label,
+  options,
+  selectedValues,
+  onChange,
+  disabled
+}: {
+  label: string;
+  options: { value: string; label: string }[];
+  selectedValues: string[];
+  onChange: (values: string[]) => void;
+  disabled?: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  const toggle = (val: string) => {
+    if (selectedValues.includes(val)) {
+      onChange(selectedValues.filter(v => v !== val));
+    } else {
+      onChange([...selectedValues, val]);
+    }
+  };
+
+  const selectedLabels = options
+    .filter(o => selectedValues.includes(o.value))
+    .map(o => o.label);
+
+  return (
+    <div className="relative flex-1 min-w-[200px]" ref={ref}>
+      <label className="block text-sm font-bold text-secondary-800 mb-2">
+        {label}
+      </label>
+      <div
+        className={`w-full bg-secondary-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm flex items-center justify-between transition-shadow text-secondary-900 ${
+          disabled ? "opacity-50 cursor-not-allowed" : "hover:bg-secondary-100 cursor-pointer"
+        }`}
+        onClick={() => !disabled && setOpen(!open)}
+      >
+        <div className="truncate pr-2 select-none">
+          {selectedLabels.length === 0
+            ? "Any"
+            : selectedLabels.length === 1
+            ? selectedLabels[0]
+            : `${selectedLabels.length} selected`}
+        </div>
+        <ChevronDown className="w-4 h-4 text-gray-500 shrink-0" />
+      </div>
+
+      {open && (
+        <div className="absolute z-50 top-full left-0 right-0 mt-2 bg-white border border-gray-100 rounded-xl shadow-xl max-h-60 overflow-y-auto">
+          {options.map((opt) => (
+            <label
+              key={opt.value}
+              className="flex items-center px-4 py-3 hover:bg-primary-50 cursor-pointer border-b border-gray-50 last:border-0"
+            >
+              <input
+                type="checkbox"
+                checked={selectedValues.includes(opt.value)}
+                onChange={() => toggle(opt.value)}
+                className="w-4 h-4 text-primary-600 rounded border-gray-300 focus:ring-primary-500 mr-3"
+              />
+              <span className="text-sm font-medium text-secondary-800">
+                {opt.label}
+              </span>
+            </label>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

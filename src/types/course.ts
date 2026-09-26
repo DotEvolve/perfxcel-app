@@ -58,10 +58,10 @@ export interface Course {
 }
 
 export interface CourseFilters {
-  category_id?: string;
-  city_id?: string;
-  association_id?: string;
-  delivery_mode_id?: string;
+  category_id?: string[];
+  city_id?: string[];
+  association_id?: string[];
+  delivery_mode_id?: string[];
   search?: string;
   page?: number;
   limit?: number;

@@ -14,13 +14,7 @@ export function useCourses(filters: CourseFilters, skip: boolean = false) {
       .then(setCourses)
       .catch(() => setError("Failed to load courses"))
       .finally(() => setLoading(false));
-  }, [
-    filters.category_id,
-    filters.city_id,
-    filters.association_id,
-    filters.delivery_mode_id,
-    skip,
-  ]);
+  }, [JSON.stringify(filters), skip]);
 
   return { courses, loading, error };
 }

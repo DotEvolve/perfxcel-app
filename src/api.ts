@@ -56,12 +56,21 @@ export const getCourses = async (
   filters: CourseFilters = {},
 ): Promise<Course[]> => {
   const params = new URLSearchParams();
-  if (filters.category_id) params.append("category_id", filters.category_id);
-  if (filters.city_id) params.append("city_id", filters.city_id);
-  if (filters.association_id)
-    params.append("association_id", filters.association_id);
-  if (filters.delivery_mode_id)
-    params.append("delivery_mode_id", filters.delivery_mode_id);
+  if (filters.category_id) {
+    filters.category_id.forEach((id) => params.append("category_id", id));
+  }
+  if (filters.city_id) {
+    filters.city_id.forEach((id) => params.append("city_id", id));
+  }
+  if (filters.association_id) {
+    filters.association_id.forEach((id) => params.append("association_id", id));
+  }
+  if (filters.delivery_mode_id) {
+    filters.delivery_mode_id.forEach((id) => params.append("delivery_mode_id", id));
+  }
+  if (filters.search) {
+    params.append("search", filters.search);
+  }
 
   if (filters.is_public) {
     params.append("is_public", "true");
