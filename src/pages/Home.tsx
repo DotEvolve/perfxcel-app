@@ -36,7 +36,9 @@ export default function Home() {
   const categories = taxonomies?.categories || [];
 
   // Fetch public courses for the featured section
-  const { courses: featuredCourses, loading: featuredLoading } = useCourses({});
+  const { courses: featuredCourses, loading: featuredLoading } = useCourses({
+    is_public: true,
+  });
 
   const scrollRef = useRef<HTMLDivElement>(null);
 

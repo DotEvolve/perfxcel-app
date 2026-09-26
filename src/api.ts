@@ -63,7 +63,9 @@ export const getCourses = async (
   if (filters.delivery_mode_id)
     params.append("delivery_mode_id", filters.delivery_mode_id);
 
-  params.append("is_public", "true");
+  if (filters.is_public) {
+    params.append("is_public", "true");
+  }
 
   const response = await api.get(`/courses?${params.toString()}`);
   return response.data.data.filter(

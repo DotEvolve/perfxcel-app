@@ -65,4 +65,5 @@ export interface CourseFilters {
   search?: string;
   page?: number;
   limit?: number;
+  is_public?: boolean;
 }
